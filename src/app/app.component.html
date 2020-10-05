@@ -1,0 +1,122 @@
+<div class="row top-header">
+  <div class="col-sm-1 col-md-1 col-lg-1">
+    <button mat-icon-button [matMenuTriggerFor]="main" *ngIf="logged">
+      <mat-icon>more_vert</mat-icon> Menú
+    </button>
+    <mat-menu #main="matMenu">
+      <button mat-menu-item [matMenuTriggerFor]="access">
+        <mat-icon>security</mat-icon>
+        <span>Acceso</span>
+      </button>
+      <button mat-menu-item [routerLink]="['/assets-list']">
+        <mat-icon>computer</mat-icon>
+        <span>Activos Fijos</span>
+      </button>
+      <button mat-menu-item [matMenuTriggerFor]="reports">
+        <mat-icon>text_snippet</mat-icon>
+        <span>Reportes</span>
+      </button>
+    </mat-menu>
+    <mat-menu #reports="matMenu">
+      <button mat-menu-item [routerLink]="['/report-general']">
+        <mat-icon>label</mat-icon>
+        <span>General</span>
+      </button>
+      <button mat-menu-item [routerLink]="['/report-by-location']">
+        <mat-icon>label</mat-icon>
+        <span>Por Ubicaciones</span>
+      </button>
+      <button mat-menu-item [routerLink]="['/report-by-person']">
+        <mat-icon>label</mat-icon>
+        <span>Por Personas</span>
+      </button>
+      <button mat-menu-item [routerLink]="['/report-main']">
+        <mat-icon>label</mat-icon>
+        <span>M.E.P.</span>
+      </button>
+    </mat-menu>
+    <mat-menu #access="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        Salir
+      </button>
+      <button mat-menu-item [routerLink]="['/user-list']">
+        <mat-icon>
+          supervised_user_circle
+        </mat-icon>
+        Usuarios
+      </button>
+      <button mat-menu-item [routerLink]="['/user-security']">
+        <mat-icon>list_alt</mat-icon>
+        Permisos
+      </button>
+    </mat-menu>
+  </div>
+  <div class="col-sm-9 col-md-9 col-lg-9">
+    <p style="padding-top: 7px;"  *ngIf="logged">
+      <strong>
+        Bienvenido: {{user.firstName}} {{user.lastName}}
+      </strong>
+    </p>
+  </div>
+  <div class="col-sm-2 col-md-2 col-lg-2">
+    <button mat-icon-button [matMenuTriggerFor]="settings"  *ngIf="logged">
+      <mat-icon>settings</mat-icon> Configuración
+    </button>
+    <mat-menu #settings="matMenu">
+      <button mat-menu-item [routerLink]="['/person-list']">
+        <mat-icon>person</mat-icon>
+        Responsables
+      </button>
+      <button mat-menu-item [routerLink]="['/location-list']">
+        <mat-icon>
+          location_on
+        </mat-icon>
+        Ubicaciones
+      </button>
+      <button mat-menu-item [routerLink]="['/states-list']">
+        <mat-icon>
+          aspect_ratio
+        </mat-icon>
+        Estado de Articulos
+      </button>
+      <button mat-menu-item [routerLink]="['/method-list']">
+        <mat-icon>
+          label
+        </mat-icon>
+        Metodos de Compra
+      </button>
+      <button mat-menu-item [routerLink]="['/depreciation-list']">
+        <mat-icon>
+          attach_money
+        </mat-icon>
+        Depreciaciones
+      </button>
+      <button mat-menu-item [routerLink]="['/provider-list']">
+        <mat-icon>
+          people
+        </mat-icon>
+        Proveedores
+      </button>
+      <button mat-menu-item [routerLink]="['/main-config']">
+        <mat-icon>
+          settings
+        </mat-icon>
+        General
+      </button>
+    </mat-menu>
+  </div>
+</div>
+<div class="row fullH">
+  <div class="col-sm-1 col-md-1 col-lg-1">
+
+  </div>
+  <div class="col-sm-10 col-md-10 col-lg-10">
+    <div class="mainContainer">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  <div class="col-sm-1 col-md-1 col-lg-1">
+
+  </div>
+</div>

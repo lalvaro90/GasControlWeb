@@ -1,0 +1,81 @@
+<mat-spinner *ngIf="loading"></mat-spinner>
+<mat-card style="width:100%;">
+  <mat-card-title>
+    {{form.formName}}
+  </mat-card-title>
+  <form [formGroup]="formGroup">
+    <div class="row">
+      <div *ngFor="let item of form.formItems" class="col-sm-6 col-md-6 col-lg-6">
+        <mat-form-field *ngIf="item.type == 'select'">
+          <mat-label>{{item.name}}</mat-label>
+          <mat-select formControlName="{{item.propertyName}}">
+            <mat-option value="0" selected>Selectione un Opción</mat-option>
+            <mat-option *ngFor="let op of item.source" [value]="op[item.sourceValue]">{{op[item.sourceText]}} {{op[item.secondText]}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field
+          *ngIf="item.type != 'file' && item.type != 'select' && item.type != 'submit'
+          && item.type != 'cancel' && item.type != 'hidden' && item.type != 'barcode'
+          && item.type != 'textarea'">
+          <mat-label>
+            {{item.name}}
+          </mat-label>
+          <input *ngIf="item.textMask" matInput type="{{item.type}}" [textMask]="{mask: item.textMask}" placeholder="{{item.placeHolder}}" formControlName="{{item.propertyName}}"
+            [readonly]="item.isReadOnly" />
+          <input *ngIf="!item.textMask" matInput type="{{item.type}}" placeholder="{{item.placeHolder}}" formControlName="{{item.propertyName}}"
+          [readonly]="item.isReadOnly" />
+          <span matPrefix *ngIf="item.prefix">{{item.prefix}}</span>
+        </mat-form-field>
+        <!-- <mat-form-field > -->
+          <fieldset matInput *ngIf="item.type == 'file'" class="form-group">
+            <label>{{item.name}}</label>
+            {{imageError}}
+            <div class="custom-file fileInputProfileWrap">
+              <input type="file" (change)="fileChangeEvent($event,item.propertyName)"
+                formControlName="{{item.propertyName}}" class="fileInputProfile" [readonly]="item.isReadOnly">
+              <div class="img-space">
+                <img [src]="files[item.propertyName]" class="img-responsive">
+              </div>
+            </div>
+          </fieldset>
+        <!-- </mat-form-field> -->
+        <div class="barcode" id="p-{{item.propertyName}}" *ngIf="item.type == 'barcode'">
+          <table>
+            <tr>
+              <td colspan="3">
+                  <strong>{{item.prefix}}</strong>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <img [src]="item.img" id="img">
+              </td>
+              <td colspan="2">
+                <img id="{{item.propertyName}}" />
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3">
+                  <strong>M.E.P. {{item.value}}</strong>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <textarea *ngIf="item.type == 'textarea'" rows="10" cols="35" formControlName="{{item.propertyName}}"></textarea>
+        <input type="hidden" *ngIf="item.type == 'hidden'" [value]="item.value" formControlName="{{item.propertyName}}">
+      </div>
+    </div>
+    <div class="row">
+      <br>
+    </div>
+    <div *ngIf="form.hasSubmit || form.hasCancel || form.hasPrint" class="row">
+      <button *ngIf="form.hasSubmit" mat-raised-button class="space-r-10" color="primary"
+        (click)="register()">{{form.submitText}}</button>
+      <button *ngIf="form.hasCancel" mat-raised-button class="space-r-10" color="warn"
+        (click)="clear()">{{form.cancelText}}</button>
+        <button *ngIf="form.hasPrint" mat-raised-button class="space-r-10" color="accent"
+        [styleSheetFile]="form.printStyleRef" [printSectionId]="form.printSectionId" ngxPrint
+          >{{form.printText}}</button>
+    </div>
+  </form>
+</mat-card>

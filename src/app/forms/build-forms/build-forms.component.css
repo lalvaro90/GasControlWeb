@@ -1,0 +1,15 @@
+.space-r-10{
+  margin-right: 10px;
+}
+input, mat-form-field{
+  width: 90%!important;
+}
+
+.form-group{
+  height: 250px;
+}
+
+.img-space img{
+  max-height: 200px;
+  max-width: 98%;
+}

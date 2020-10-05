@@ -1,0 +1,67 @@
+<div class="row">
+  &nbsp;
+</div>
+<div class="row">
+  <div class="col-sm-3 col-md-3 col-lg-3"></div>
+  <div class="col-sm-6 col-md-6 col-lg-6">
+    <mat-card>
+      <mat-card-title>
+        Sistema de Control de Activos Fijos
+      </mat-card-title>
+      <mat-card-content>
+        <div class="row" style="align-content: center;">
+          <img src="{{config.institutionLogo}}">
+        </div>
+        <form [formGroup]="formGroup">
+          <div class="row">
+            <mat-form-field>
+              <mat-label>Usuario</mat-label>
+              <input matInput type="email" formControlName="email">
+            </mat-form-field>
+            &nbsp;&nbsp;
+            <mat-form-field>
+              <mat-label>Contraseña</mat-label>
+              <input matInput type="password" formControlName="password" (keydown)="onKeydown($event)">
+            </mat-form-field>
+          </div>
+          <div class="row">&nbsp;</div>
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <mat-checkbox formControlName="rememberme" (change)="rememberme($event)">Recordarme?</mat-checkbox>
+            </div>
+          </div>
+        </form>
+        <div class="row">&nbsp;</div>
+        <div class="row buttons-panel">
+          <button mat-raised-button color="primary" (click)="login()">Ingresar</button>
+          <button mat-raised-button color="warn">Cancelar</button>
+        </div>
+        <div class="row">
+          &nbsp;
+        </div>
+        <div class="row">
+          &nbsp;
+        </div>
+        <div class="row">
+          <div class="col-sm-6 col-md-6 col-lg-6">
+            <h6>Desarollado por <a href="https://mdsolutionscr.com/" target="_blank">MD Solutions</a> </h6>
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-6">
+            <h6>Tel: <a href="tel:6070-0131">6070-0131</a></h6>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="col-sm-3 col-md-3 col-lg-3"></div>
+</div>
+<div class="row">
+  &nbsp;
+</div>
+<div class="row">
+  <div class="col-sm-4 col-md-4 col-lg-4"></div>
+  <div class="col-sm-4 col-md-4 col-lg-4">
+    <mat-spinner *ngIf="loading"></mat-spinner>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4"></div>
+</div>
