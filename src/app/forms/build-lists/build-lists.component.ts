@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ListModel, ListItemActionsModel } from '../List-Item-Model';
-import { RouterModule, Router } from '@angular/router';
-import { url } from 'inspector';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-build-lists',

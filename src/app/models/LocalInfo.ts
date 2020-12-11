@@ -8,6 +8,5 @@ export class LocalInformation {
   email:string;
   key:string;
   expire:Date;
-  type:number;
   permissions:string;
 }

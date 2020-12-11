@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AssetProviderService } from 'src/app/Services/asset-provider.service';
 import { ListModel } from 'src/app/forms/List-Item-Model';
 import { Provider } from 'src/app/models/Provider';
 import { Router } from '@angular/router';
@@ -19,7 +18,7 @@ export class ProviderListComponent implements OnInit {
   showList = false;
   user:User;
 
-  constructor(private providerService: AssetProviderService, private router:Router, private userService: UserService) {
+  constructor(private router:Router, private userService: UserService) {
     this.listMode = new ListModel();
     this.userService.loggedUser.subscribe(res => {
       this.user = res;
@@ -48,18 +47,6 @@ export class ProviderListComponent implements OnInit {
       { HeaderText: 'Correo Eléctornico', PropertyName: 'email', SecondPropertyName:undefined, isObject:false, subProperty1:undefined, subProperty2: undefined },
       { HeaderText: 'Telefono', PropertyName: 'phone', SecondPropertyName:undefined, isObject:false, subProperty1:undefined, subProperty2: undefined },
     ];
-
-    this.listMode.listActions = [
-      { service: this.providerService, Name: 'Editar', URL: '/provider-edit', Icon: 'edit ', callback: undefined, params: ['id'], isEnable:canDelete, router:this.router },
-      { service: this.providerService, Name: 'Eliminar', URL: undefined, Icon: 'delete_sweep ', callback: this.deleteItem, params: undefined, isEnable:canDelete, router:this.router},
-    ];
-
-    this.loading = true;
-    this.providerService.get().subscribe(res => {
-      this.listMode.list = res;
-      this.loading = false;
-      this.showList = true;
-    })
   }
 
   new(){

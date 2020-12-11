@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { ConfigService } from 'src/app/Services/config.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertItem } from 'src/app/helpers/AlertItem';
-import { ConfigurationModel } from 'src/app/models/Configuration';
+import { Configuration } from 'src/app/models/Configuration';
 
 @Component({
   selector: 'app-user-new',
@@ -17,7 +17,7 @@ export class UserNewComponent implements OnInit {
   formItem = new FormBuilder;
   alertComponent: AlertItem;
   formItemReady = false;
-  config: ConfigurationModel;
+  config: Configuration;
   user:User;
   loading = false;
 

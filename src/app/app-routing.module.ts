@@ -1,11 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuardService } from './helpers/AuthGuard ';
-import { ProviderNewComponent } from './configuration/provider-new/provider-new.component';
-import { ProviderListComponent } from './configuration/provider-list/provider-list.component';
-import { UserListComponent } from './configuration/user-list/user-list.component';
-import { UserNewComponent } from './configuration/user-new/user-new.component';
-import { SecurityComponent } from './configuration/security/security.component';
 import { LoginComponent } from './general/login/login.component';
 
 /*
@@ -29,14 +23,7 @@ providers_view;providers_edit;providers_delete;config_view;config_edit;reports_v
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/login' },
   {path:'login', component: LoginComponent},
-  {path: 'provider-new', component: ProviderNewComponent, canActivate: [AuthGuardService], data: { expectedRole: 'providers_new' }},
-  {path: 'provider-edit', component: ProviderNewComponent, canActivate: [AuthGuardService], data: { expectedRole: 'providers_edit' }},
-  {path: 'provider-list', component: ProviderListComponent, canActivate: [AuthGuardService], data: { expectedRole: 'providers_view' }},
-  {path: 'user-new', component: UserNewComponent, canActivate: [AuthGuardService], data: { expectedRole: 'user_new' }},
-  {path: 'user-edit', component: UserNewComponent, canActivate: [AuthGuardService], data: { expectedRole: 'user_edit' }},
-  {path: 'user-list', component: UserListComponent, canActivate: [AuthGuardService], data: { expectedRole: 'user_view' }},
-  {path: 'user-security', component: SecurityComponent, canActivate: [AuthGuardService], data: { expectedRole: 'user_new' }},
-  {path: 'main-config', component: Main, canActivate: [AuthGuardService], data: { expectedRole: 'config_edit' }},
+  {path: 'config', loadChildren: './configuration/Configuration.Module#ConfigurationModule'}
 ];
 
 @NgModule({

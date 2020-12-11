@@ -64,45 +64,27 @@
       <mat-icon>settings</mat-icon> Configuración
     </button>
     <mat-menu #settings="matMenu">
-      <button mat-menu-item [routerLink]="['/person-list']">
+      <button mat-menu-item [routerLink]="['/config/provider-list']">
         <mat-icon>person</mat-icon>
-        Responsables
+        Proveedores
       </button>
-      <button mat-menu-item [routerLink]="['/location-list']">
+      <button mat-menu-item [routerLink]="['/config/user-list']">
         <mat-icon>
-          location_on
+          supervised_user_circle
         </mat-icon>
-        Ubicaciones
+        Usuarios
       </button>
-      <button mat-menu-item [routerLink]="['/states-list']">
+      <button mat-menu-item [routerLink]="['/config/user-security']">
         <mat-icon>
           aspect_ratio
         </mat-icon>
-        Estado de Articulos
+        Seguridad
       </button>
-      <button mat-menu-item [routerLink]="['/method-list']">
-        <mat-icon>
-          label
-        </mat-icon>
-        Metodos de Compra
-      </button>
-      <button mat-menu-item [routerLink]="['/depreciation-list']">
-        <mat-icon>
-          attach_money
-        </mat-icon>
-        Depreciaciones
-      </button>
-      <button mat-menu-item [routerLink]="['/provider-list']">
-        <mat-icon>
-          people
-        </mat-icon>
-        Proveedores
-      </button>
-      <button mat-menu-item [routerLink]="['/main-config']">
+      <button mat-menu-item [routerLink]="['/config/main-config']">
         <mat-icon>
           settings
         </mat-icon>
-        General
+       Configuración General
       </button>
     </mat-menu>
   </div>

@@ -4,10 +4,10 @@ import { UserService } from 'src/app/Services/user.service';
 import { Router } from '@angular/router';
 import { User } from 'src/app/models/User';
 import { LocalInformation } from 'src/app/models/LocalInfo';
-import { ConfigurationModel } from 'src/app/models/Configuration';
 import { ConfigService } from 'src/app/Services/config.service';
 import { AlertItem } from 'src/app/helpers/AlertItem';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Configuration } from 'src/app/models/Configuration';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
 
   formGroup:FormGroup;
   loading = false;
-  config:ConfigurationModel;
+  config:Configuration;
   alertItem: any;
   rememberUser:boolean = false;
   constructor(private userService:UserService, private router: Router, private configService:ConfigService) {
@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
       password: new FormControl('',Validators.required),
       rememberme: new FormControl('')
     });
-    this.config = new ConfigurationModel();
+    this.config = new Configuration();
     this.configService.get().subscribe(res => {
       this.config = res[0];
     })
@@ -54,7 +54,6 @@ export class LoginComponent implements OnInit {
            loggedUser.id = data.id;
            loggedUser.email = data.email;
            loggedUser.lastName = data.lastName;
-           loggedUser.type = data.type;
            loggedUser.token = data.key;
            loggedUser.firstName = data.firstName;
            loggedUser.permissions = data.permissions;
@@ -116,7 +115,6 @@ export class LoginComponent implements OnInit {
      localData.lastName = res.lastName;
      localData.email = res.email;
      localData.key = res.token;
-     localData.type = res.type;
      localData.permissions = res.permissions;
      localData.expire = new Date(Date.now() + (30 * 60 * 1000));
      window.localStorage.setItem('AssetAppData', JSON.stringify(localData));

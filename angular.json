@@ -128,5 +128,8 @@
       }
     }
   },
-  "defaultProject": "AssetsApp"
+  "defaultProject": "AssetsApp",
+  "cli": {
+    "analytics": "41eaca95-c9e1-410a-a072-2162502771ba"
+  }
 }
