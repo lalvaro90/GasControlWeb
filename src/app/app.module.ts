@@ -13,11 +13,12 @@ import { GeneralModule } from './general/general.module';
 import { AutomaticFormsModule } from './forms/forms.module';
 import {NgxPrintModule} from 'ngx-print';
 import { ReportsModule } from './reports/reports.module';
-import { ConfigurationModule } from './configuration/configuration.module';
+import { AppConfigurationModule } from './app-configuration/app-configuration.module';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,7 +30,8 @@ import { ConfigurationModule } from './configuration/configuration.module';
     ReportsModule,
     AutomaticFormsModule,
     NgxPrintModule,
-    ConfigurationModule
+    AppConfigurationModule,
+    GoogleMapsModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },

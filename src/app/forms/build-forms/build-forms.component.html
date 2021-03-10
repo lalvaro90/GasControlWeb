@@ -16,7 +16,7 @@
         <mat-form-field
           *ngIf="item.type != 'file' && item.type != 'select' && item.type != 'submit'
           && item.type != 'cancel' && item.type != 'hidden' && item.type != 'barcode'
-          && item.type != 'textarea'">
+          && item.type != 'textarea' && item.type != 'location'">
           <mat-label>
             {{item.name}}
           </mat-label>
@@ -39,6 +39,10 @@
             </div>
           </fieldset>
         <!-- </mat-form-field> -->
+        <fieldset matInput *ngIf="item.type == 'location'">
+          <label>{{item.name}}</label>
+          <google-map width="750px" height="450px" [center]="center" [zoom]="zoom"></google-map>
+        </fieldset>
         <div class="barcode" id="p-{{item.propertyName}}" *ngIf="item.type == 'barcode'">
           <table>
             <tr>

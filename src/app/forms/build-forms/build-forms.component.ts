@@ -22,6 +22,10 @@ export class AutomaticBuildFormsComponent implements OnInit {
   barcodes: { [id: string]: string; } = {};
   nextBarcode = new BehaviorSubject<boolean>(false);
   loading:boolean;
+  
+  center = {lat: 24, lng: 12};
+  zoom = 15;
+  display?: google.maps.LatLngLiteral;
 
   @Input() form: FormBuilder;
   formGroup: FormGroup;

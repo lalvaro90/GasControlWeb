@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { AutomaticBuildFormsComponent } from './build-forms/build-forms.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material-module';
-import { BrowserModule } from '@angular/platform-browser';
 import { NgxPrintModule } from 'ngx-print';
 import { BuildListsComponent } from './build-lists/build-lists.component';
 import { TextMaskModule } from 'angular2-text-mask';
@@ -19,7 +18,7 @@ import { TextMaskModule } from 'angular2-text-mask';
     CommonModule,
     ReactiveFormsModule,
     MaterialModule,
-    BrowserModule,
+    CommonModule,
     NgxPrintModule,
     TextMaskModule,
   ],

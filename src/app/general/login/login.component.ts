@@ -31,7 +31,8 @@ export class LoginComponent implements OnInit {
     });
     this.config = new Configuration();
     this.configService.get().subscribe(res => {
-      this.config = res[0];
+      if(res[0])
+        this.config = res[0];
     })
   }
 
@@ -47,7 +48,7 @@ export class LoginComponent implements OnInit {
 
   validateLoggedUser(){
     let loggedUser:User;
-       let data = <LocalInformation> JSON.parse(window.localStorage.getItem('AssetAppData'));
+       let data = <LocalInformation> JSON.parse(window.localStorage.getItem('GasAppData'));
        if(data){
          if(new Date(data.expire) > new Date()){
            loggedUser = new User();
@@ -58,7 +59,7 @@ export class LoginComponent implements OnInit {
            loggedUser.firstName = data.firstName;
            loggedUser.permissions = data.permissions;
            this.userService.loggedUser.next(loggedUser);
-           this.router.navigate(['/assets-list']);
+           this.router.navigate(['/config/user-list']);
          }
        }
    }
@@ -72,7 +73,7 @@ export class LoginComponent implements OnInit {
      this.userService.login(user).subscribe(res => {
        this.userService.loggedUser.next(res);
        this.saveLocalData(res);
-       this.router.navigate(['/assets-list']);
+       this.router.navigate(['/config/user-list']);
      },err => {
 
         if (err instanceof HttpErrorResponse) {
@@ -117,7 +118,7 @@ export class LoginComponent implements OnInit {
      localData.key = res.token;
      localData.permissions = res.permissions;
      localData.expire = new Date(Date.now() + (30 * 60 * 1000));
-     window.localStorage.setItem('AssetAppData', JSON.stringify(localData));
+     window.localStorage.setItem('GasAppData', JSON.stringify(localData));
      if(this.rememberUser){
       this.rememberme({checked:true});
      }

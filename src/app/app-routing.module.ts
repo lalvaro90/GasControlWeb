@@ -23,7 +23,7 @@ providers_view;providers_edit;providers_delete;config_view;config_edit;reports_v
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/login' },
   {path:'login', component: LoginComponent},
-  {path: 'config', loadChildren: './configuration/Configuration.Module#ConfigurationModule'}
+  {path: 'config', loadChildren: './app-configuration/app-configuration.module#AppConfigurationModule'}
 ];
 
 @NgModule({

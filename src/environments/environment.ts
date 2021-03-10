@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   // api: 'http://qwertasdf.space/',
-  api: 'https://controldeactivos.mdsolutionscr.com/',
+  api: 'https://localhost:44309/',
 };
 
 /*

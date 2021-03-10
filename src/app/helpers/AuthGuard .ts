@@ -22,10 +22,12 @@ export class AuthGuardService implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot): boolean {
 
     const expectRole = route.data.expectedRole;
+    const fullAccess = 'full_access';
     if (!this.loggedUser) {
       this.router.navigate(['login']);
       return false;
-    } else if (this.loggedUser.permissions.indexOf(expectRole) < 0) {
+    } else if (this.loggedUser.permissions.indexOf(expectRole) < 0 
+              && this.loggedUser.permissions.indexOf(fullAccess) < 0) {
       this.alertComponent.title = "Error!";
       this.alertComponent.text = 'Usuario no tiene permisos suficuentes para acceder esta funcion';
       this.alertComponent.type = 'error';

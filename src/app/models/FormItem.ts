@@ -74,4 +74,5 @@ export enum InputType{
   cancel = 'cancel',
   barcode = 'barcode',
   textarea = 'textarea',
+  location = 'location',
 }
