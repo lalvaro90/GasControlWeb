@@ -1,0 +1,54 @@
+<div class="row">
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <mat-card>
+      <mat-card-header>
+        Permisos de Usuario
+      </mat-card-header>
+      <mat-card-content>
+        <div class="row">
+          <div class="col-sm-3 col-md-3 col-lg-3"></div>
+          <div class="col-sm-5 col-md-5 col-lg-5">
+            <mat-form-field appearance="fill">
+              <mat-label>Seleccione un Usuario</mat-label>
+              <mat-select (selectionChange)="selectUser($event)">
+                <mat-option value="0">
+                  Seleccione un Usuario
+                </mat-option>
+                <mat-option *ngFor="let usr of users" (selectionChange)="selectUser($event)" value="{{usr.id}}">
+                  {{usr.firstName}} {{usr.lastName}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-4 col-md-4 col-lg-4">
+            <mat-slide-toggle (change)="selectAll($event)">Marcar Todos los Permisos</mat-slide-toggle>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <form [formGroup]="formGroup">
+              <mat-accordion>
+                <mat-expansion-panel *ngFor="let perm of Permissions">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      {{perm.name}}
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <mat-checkbox *ngFor="let it of perm.permissions" formControlName="{{it.value}}">{{it.name}}
+                  </mat-checkbox>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </form>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4 col-md-4 col-lg-4"></div>
+          <div class="col-sm-4 col-md-4 col-lg-4"></div>
+          <div class="col-sm-4 col-md-4 col-lg-4">
+            <button mat-raised-button color="primary" (click)="savePermission()" >Guardar</button>
+            <button mat-raised-button color="warn" (click)="cancel()">Cancelar</button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
