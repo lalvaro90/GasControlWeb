@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormItem, FormBuilder, InputType } from 'src/app/models/FormItem';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,6 +6,7 @@ import { AlertItem } from 'src/app/helpers/AlertItem';
 import { BehaviorSubject } from 'rxjs';
 import { isNgTemplate } from '@angular/compiler';
 import * as JsBarcode from 'jsbarcode';
+import { GoogleMap, MapMarker } from '@angular/google-maps';
 
 @Component({
   selector: 'app-build-forms',
@@ -14,6 +15,12 @@ import * as JsBarcode from 'jsbarcode';
 })
 
 export class AutomaticBuildFormsComponent implements OnInit {
+  map: GoogleMap;
+  @ViewChild(GoogleMap)
+  set Map(mp:GoogleMap){
+    this.map = mp;
+  } 
+  marker:google.maps.Marker;
   alertComponent: AlertItem;
   imageError: string;
   isImageSaved: boolean;
@@ -21,10 +28,10 @@ export class AutomaticBuildFormsComponent implements OnInit {
   files: { [id: string]: string; } = {};
   barcodes: { [id: string]: string; } = {};
   nextBarcode = new BehaviorSubject<boolean>(false);
-  loading:boolean;
-  
-  center = {lat: 24, lng: 12};
-  zoom = 15;
+  loading: boolean;
+
+  center = { lat:9.936268,lng:-84.1308679 };
+  zoom = 17;
   display?: google.maps.LatLngLiteral;
 
   @Input() form: FormBuilder;
@@ -38,6 +45,39 @@ export class AutomaticBuildFormsComponent implements OnInit {
         });
       }
     })
+  }
+
+  ngAfterViewInit() {
+    console.log(this.map);
+    if (this.map) {
+      this.getCurrentLocation()
+    }
+  }
+
+  getCurrentLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position: any) => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        }
+        this.map.googleMap.setCenter(pos);
+        if(this.marker){
+          this.marker.setMap(this.map.googleMap);
+          this.marker.setPosition(this.marker.getPosition());
+          this.map.googleMap.setCenter(this.marker.getPosition());
+        }
+
+        this.map.mapClick.subscribe((res)=> {
+          console.log('click',res);
+          if(this.marker){
+            this.marker.setPosition(res.latLng);
+          }
+          else
+            this.marker = new google.maps.Marker({ position: res.latLng, map: this.map.googleMap});
+        })
+      })
+    }
   }
 
   ngOnInit(): void {
@@ -55,6 +95,9 @@ export class AutomaticBuildFormsComponent implements OnInit {
         this.files[item.propertyName] = item.value;
       } else if (item.type == InputType.barcode) {
         this.barcodes[item.propertyName] = item.value
+      }
+      else if(item.type == InputType.location){
+        this.marker = new google.maps.Marker({map:this.map?.googleMap, position: JSON.parse(item.value)})
       }
       else {
         this.formGroup.controls[item.propertyName].setValue(item.value);
@@ -83,15 +126,26 @@ export class AutomaticBuildFormsComponent implements OnInit {
         else if (it.type == InputType.barcode) {
           output[it.propertyName] = this.barcodes[it.propertyName];
         }
+        else if(it.type == InputType.location){
+          output[it.propertyName] = JSON.stringify(this.marker.getPosition());
+        }
+        else if(it.type == InputType.hidden){
+          if(it.propertyName == 'id'){
+            output[it.propertyName] = <number>this.formGroup.controls[it.propertyName].value;
+          }
+          else{
+            output[it.propertyName] = this.formGroup.controls[it.propertyName].value;
+          }
+        }
         else {
           output[it.propertyName] = this.formGroup.controls[it.propertyName].value;
         }
       });
 
-      if(this.formGroup.valid){
+      if (this.formGroup.valid) {
         this.form.submit(output, this.form.service);
       }
-      else{
+      else {
         this.alertComponent.type = 'warning';
         this.alertComponent.timer = 2500;
         this.alertComponent.title = 'Error';

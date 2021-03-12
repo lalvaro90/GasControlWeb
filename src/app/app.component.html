@@ -60,13 +60,21 @@
     </p>
   </div>
   <div class="col-sm-2 col-md-2 col-lg-2">
-    <button mat-icon-button [matMenuTriggerFor]="settings"  *ngIf="logged">
+    <button mat-icon-button [matMenuTriggerFor]="settings"  *ngIf="logged | async">
       <mat-icon>settings</mat-icon> Configuración
     </button>
     <mat-menu #settings="matMenu">
       <button mat-menu-item [routerLink]="['/config/provider-list']">
         <mat-icon>person</mat-icon>
         Proveedores
+      </button>
+      <button mat-menu-item [routerLink]="['/config/machine-list']">
+        <mat-icon>toys</mat-icon>
+        Maquinas/Equipo
+      </button>
+      <button mat-menu-item [routerLink]="['/config/project-list']">
+        <mat-icon>topic</mat-icon>
+        Proyectos
       </button>
       <button mat-menu-item [routerLink]="['/config/user-list']">
         <mat-icon>

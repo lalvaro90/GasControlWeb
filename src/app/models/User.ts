@@ -17,4 +17,11 @@ export class User
         status: ItemStatus;
         permissions: string;
         isActive: boolean;
+        userType:UserType;
     }
+
+export class UserType{
+    id:number;
+    name:string;
+    description:string;
+}

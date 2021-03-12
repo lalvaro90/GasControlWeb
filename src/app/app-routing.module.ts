@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AddImageComponent } from './general/add-image/add-image.component';
 import { LoginComponent } from './general/login/login.component';
 
 /*
@@ -23,6 +24,7 @@ providers_view;providers_edit;providers_delete;config_view;config_edit;reports_v
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/login' },
   {path:'login', component: LoginComponent},
+  {path:'images/:service/:property/:id', component: AddImageComponent},
   {path: 'config', loadChildren: './app-configuration/app-configuration.module#AppConfigurationModule'}
 ];
 

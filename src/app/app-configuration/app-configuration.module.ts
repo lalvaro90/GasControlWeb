@@ -13,12 +13,20 @@ import { RouterModule, Routes } from '@angular/router';
 import { AutomaticFormsModule } from '../forms/forms.module';
 import { MaterialModule } from '../material-module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ProjectNewComponent } from './project-new/project-new.component';
+import { ProjectListComponent } from './project-list/project-list.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/login' },
   {path: 'provider-new', component: ProviderNewComponent, canActivate: [AuthGuardService], data: { expectedRole: 'providers_new' }},
   {path: 'provider-edit', component: ProviderNewComponent, canActivate: [AuthGuardService], data: { expectedRole: 'providers_edit' }},
   {path: 'provider-list', component: ProviderListComponent, canActivate: [AuthGuardService], data: { expectedRole: 'providers_view' }},
+  {path: 'project-new', component: ProjectNewComponent, canActivate: [AuthGuardService], data: { expectedRole: 'project_new' }},
+  {path: 'project-edit', component: ProjectNewComponent, canActivate: [AuthGuardService], data: { expectedRole: 'project_edit' }},
+  {path: 'project-list', component: ProjectListComponent, canActivate: [AuthGuardService], data: { expectedRole: 'project_view' }},
+  {path: 'machine-new', component: MachineNewComponent, canActivate: [AuthGuardService], data: { expectedRole: 'machine_new' }},
+  {path: 'machine-edit', component: MachineNewComponent, canActivate: [AuthGuardService], data: { expectedRole: 'machine_edit' }},
+  {path: 'machine-list', component: MachineListComponent, canActivate: [AuthGuardService], data: { expectedRole: 'machine_view' }},
   {path: 'user-new', component: UserNewComponent, canActivate: [AuthGuardService], data: { expectedRole: 'user_new' }},
   {path: 'user-edit', component: UserNewComponent, canActivate: [AuthGuardService], data: { expectedRole: 'user_edit' }},
   {path: 'user-list', component: UserListComponent, canActivate: [AuthGuardService], data: { expectedRole: 'user_view' }},
@@ -36,6 +44,8 @@ const routes: Routes = [
     SecurityComponent,
     UserListComponent,
     UserNewComponent,
+    ProjectNewComponent,
+    ProjectListComponent,
   ],
   imports: [
     RouterModule.forChild(routes),

@@ -41,7 +41,7 @@
         <!-- </mat-form-field> -->
         <fieldset matInput *ngIf="item.type == 'location'">
           <label>{{item.name}}</label>
-          <google-map width="750px" height="450px" [center]="center" [zoom]="zoom"></google-map>
+          <google-map width="400px" height="350px" [center]="center" [zoom]="zoom"></google-map>
         </fieldset>
         <div class="barcode" id="p-{{item.propertyName}}" *ngIf="item.type == 'barcode'">
           <table>
@@ -60,7 +60,7 @@
             </tr>
             <tr>
               <td colspan="3">
-                  <strong>M.E.P. {{item.value}}</strong>
+                  <strong>Traesa {{item.value}}</strong>
               </td>
             </tr>
           </table>

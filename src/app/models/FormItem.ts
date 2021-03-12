@@ -25,7 +25,6 @@ export class FormBuilder{
 }
 
 export class FormItem {
-
   Id:number;
   name:string;
   propertyName:string;
@@ -43,9 +42,9 @@ export class FormItem {
   groupName:string;
   isRequired:boolean;
   isReadOnly:boolean;
-  textMask: any;
-
+  textMask: any; 
 }
+
 
 export enum InputType{
   button = 'button',
@@ -75,4 +74,5 @@ export enum InputType{
   barcode = 'barcode',
   textarea = 'textarea',
   location = 'location',
+  list = 'list',
 }

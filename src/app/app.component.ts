@@ -3,6 +3,7 @@ import { User } from './models/User';
 import { UserService } from './Services/user.service';
 import { LocalInformation } from './models/LocalInfo';
 import { Router } from '@angular/router';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -12,24 +13,31 @@ import { Router } from '@angular/router';
 export class AppComponent {
   title = 'Control de Combustible';
   user:User;
-  logged = false;
+  logged = of(false);
 
   constructor(private userService: UserService, private router: Router){
-
+    this.userService.loggedUser.subscribe(res => {
+      if(res){
+        this.user = res;
+        this.logged = of(true);
+      }else{
+        this.user = new User();
+      }
+    });
   }
 
   ngOnInit(){
-    this.userService.loggedUser.subscribe(res => {
-      this.user = res;
-      if(res)
-        this.logged = true;
-    });
+    
+  }
+
+  ngAfterInit(){
+
   }
 
   logout(){
     window.localStorage.removeItem('AssetAppData');
     this.router.navigate(['/login']);
-    this.logged = false;
+    this.logged = of(false);
     this.userService.loggedUser.next(undefined);
   }
 }

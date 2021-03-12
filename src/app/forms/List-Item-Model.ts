@@ -6,6 +6,7 @@ export class ListModel{
   listActions:Array<ListItemActionsModel>;
   list:Array<any>;
   hasActions:boolean;
+  hasSearch: boolean;
 
 }
 export class ListItemModel{

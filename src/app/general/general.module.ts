@@ -6,11 +6,12 @@ import { FormBuilder } from '../models/FormItem';
 import { AutomaticFormsModule } from '../forms/forms.module';
 import { NgxPrintModule } from 'ngx-print';
 import { LoginComponent } from './login/login.component';
+import { AddImageComponent } from './add-image/add-image.component';
 
 
 
 @NgModule({
-  declarations: [LoginComponent],
+  declarations: [LoginComponent, AddImageComponent],
   imports: [
     CommonModule,
     MaterialModule,

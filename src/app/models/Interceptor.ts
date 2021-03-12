@@ -24,6 +24,14 @@ constructor(
     const modifiedReq = req.clone({
       headers: req.headers.append('token', `${value}`),
     });
-    return next.handle(modifiedReq);
+    return next.handle(modifiedReq).pipe( tap(() => {},
+    (err: any) => {
+    if (err instanceof HttpErrorResponse) {
+      if (err.status !== 401) {
+       return;
+      }
+      this.router.navigate(['login']);
+    }
+  }));
   }
 }

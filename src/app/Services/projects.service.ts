@@ -10,6 +10,6 @@ export class ProjectsService extends AppService<Project> {
 
   constructor(client:HttpClient)
   {
-    super(client,'configurations');
+    super(client,'projects');
    }
 }

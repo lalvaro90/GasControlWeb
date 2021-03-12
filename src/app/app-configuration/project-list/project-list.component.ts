@@ -1,25 +1,24 @@
-import { Component, OnInit, Provider } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ListModel } from 'src/app/forms/List-Item-Model';
 import { AlertItem } from 'src/app/helpers/AlertItem';
-import { Machine } from 'src/app/models/Machine';
+import { Project } from 'src/app/models/Project';
 import { User } from 'src/app/models/User';
-import { MachineService } from 'src/app/Services/machine.service';
+import { ProjectsService } from 'src/app/Services/projects.service';
 import { UserService } from 'src/app/Services/user.service';
 
 @Component({
-  selector: 'app-machine-list',
-  templateUrl: './machine-list.component.html',
-  styleUrls: ['./machine-list.component.css']
+  selector: 'app-project-list',
+  templateUrl: './project-list.component.html',
+  styleUrls: ['./project-list.component.css']
 })
-export class MachineListComponent implements OnInit {
-
+export class ProjectListComponent implements OnInit {
   listMode: ListModel;
   loading = false;
   showList = false;
   user:User;
 
-  constructor(private router:Router, private userService: UserService, private machineService:MachineService) {
+  constructor(private router:Router, private userService: UserService, private projectService:ProjectsService) {
     this.listMode = new ListModel();
     this.userService.loggedUser.subscribe(res => {
       this.user = res;
@@ -53,27 +52,27 @@ export class MachineListComponent implements OnInit {
   ngOnInit() {
     
 
-    let machine:Machine = null;
+    let project:Project = null;
     this.listMode.listItems = [
-      { HeaderText: 'Marca', PropertyName: 'brand', SecondPropertyName:undefined, isObject:false, subProperty1:undefined, subProperty2: undefined },
-      { HeaderText: 'Modelo', PropertyName: 'model', SecondPropertyName:undefined, isObject:false, subProperty1:undefined, subProperty2: undefined },
-      { HeaderText: 'Serie', PropertyName: 'series', SecondPropertyName:undefined, isObject:false, subProperty1:undefined, subProperty2: undefined },
-      { HeaderText: 'Capacidad L', PropertyName: 'tankCapacity', SecondPropertyName:undefined, isObject:false, subProperty1:undefined, subProperty2: undefined },
+      { HeaderText: 'Nombre', PropertyName: 'name', SecondPropertyName:undefined, isObject:false, subProperty1:undefined, subProperty2: undefined },
+      { HeaderText: 'Detalles', PropertyName: 'details', SecondPropertyName:undefined, isObject:false, subProperty1:undefined, subProperty2: undefined },
+      { HeaderText: 'Responsable 1', PropertyName: 'responsible1', SecondPropertyName:undefined, isObject:true, subProperty1:'firstName', subProperty2: 'lastName' },
+      { HeaderText: 'Responsable 2', PropertyName: 'responsible2', SecondPropertyName:undefined, isObject:true, subProperty1:'firstName', subProperty2: 'lastName' },
     ];
     
     this.listMode.listActions = [
-      { service: this.userService, Name: 'Editar', URL: '/machine-edit', Icon: 'edit ', callback: undefined, params: ['id'], isEnable:this.validateAccess().canEdit, router:this.router },
+      { service: this.userService, Name: 'Editar', URL: '/project-edit', Icon: 'edit ', callback: undefined, params: ['id'], isEnable:this.validateAccess().canEdit, router:this.router },
       { service: this.userService, Name: 'Eliminar', URL: undefined, Icon: 'delete_sweep ', callback: this.deleteItem, params: undefined, isEnable:this.validateAccess().canDelete, router:this.router },
     ];
 
-    this.machineService.get().subscribe(res=> {
+    this.projectService.get().subscribe(res=> {
       this.listMode.list = res;
       this.showList = true;
     })
   }
 
   new(){
-    this.router.navigate(['/machine-new']);
+    this.router.navigate(['/project-new']);
   }
 
   deleteItem(item: any, service: any, reload:Function) {
@@ -98,7 +97,7 @@ export class MachineListComponent implements OnInit {
           return false;
         };
           let utc  = Date.now();
-          this.router.navigate(['/machine-list'],{queryParams:{ref:utc}});
+          this.router.navigate(['/project-list'],{queryParams:{ref:utc}});
         });
       }
     });

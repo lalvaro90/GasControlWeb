@@ -1,15 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Machine } from '../models/Machine';
+import { UserType } from '../models/User';
 import { AppService } from './app-service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MachineService extends AppService<Machine> {
+export class UserTypesService extends AppService<UserType> {
 
-  constructor(client:HttpClient)
-  {
-    super(client,'Machine');
+  constructor(client:HttpClient) {
+    super(client,`UserTypes`);
    }
 }

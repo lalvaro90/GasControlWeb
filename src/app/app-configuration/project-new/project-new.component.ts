@@ -1,57 +1,64 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Provider } from 'src/app/models/Provider';
-import { InputType, FormItem, FormBuilder } from 'src/app/models/FormItem';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertItem } from 'src/app/helpers/AlertItem';
 import { Configuration } from 'src/app/models/Configuration';
+import { FormBuilder, FormItem, InputType } from 'src/app/models/FormItem';
+import { Project } from 'src/app/models/Project';
+import { User } from 'src/app/models/User';
 import { ConfigService } from 'src/app/Services/config.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ProviderService } from 'src/app/Services/provider.service';
+import { ProjectsService } from 'src/app/Services/projects.service';
+import { UserService } from 'src/app/Services/user.service';
 
 @Component({
-  selector: 'app-provider-new',
-  templateUrl: './provider-new.component.html',
-  styleUrls: ['./provider-new.component.css']
+  selector: 'app-project-new',
+  templateUrl: './project-new.component.html',
+  styleUrls: ['./project-new.component.css']
 })
-export class ProviderNewComponent implements OnInit {
+export class ProjectNewComponent implements OnInit {
   formItem = new FormBuilder;
   alertComponent: AlertItem;
   formItemReady = false;
-  provider: Provider;
+  project: Project;
   config: Configuration;
   loading = false;
+  users:Array<User>;
 
   constructor(
-    private providerService: ProviderService,
+    private service: ProjectsService,
     private configService: ConfigService,
+    private userService:UserService,
     public router: Router,
     private route: ActivatedRoute) {
     this.alertComponent = new AlertItem();
-    this.provider = new Provider();
+    this.project = new Project();
   }
 
   ngOnInit() {
     this.loading = true;
 
-    this.configService.get().subscribe(res => {
-      this.config = res[0];
-      this.loading = false;
-      this.route.queryParams.subscribe(params => {
-        let id = params['id'];
-        if (id) {
-          this.providerService.getById(id).subscribe(res => {
-            this.provider = res;
-            this.setupForm(this.provider);
-          });
-        }
-        else {
-          this.setupForm();
-        }
+    this.userService.get().subscribe(res => {
+      this.users = res;
+      this.configService.get().subscribe(res => {
+        this.config = res[0];
+        this.loading = false;
+        this.route.queryParams.subscribe(params => {
+          let id = params['id'];
+          if (id) {
+            this.service.getById(id).subscribe(res => {
+              this.project = res;
+              this.setupForm(this.project);
+            });
+          }
+          else {
+            this.setupForm();
+          }
+        });
       });
     });
   }
 
-  private setupForm(item: Provider = null) {
+  private setupForm(item: Project = null) {
     this.formItem = new FormBuilder();
     this.formItem.formItems = new Array<FormItem>();
     let it = <Array<FormItem>>[
@@ -65,23 +72,39 @@ export class ProviderNewComponent implements OnInit {
         isRequired: true,
       },
       {
-        name: "Correo Eléctronico",
-        placeHolder: 'Correo Eléctronico',
+        name: "Detalles",
+        placeHolder: 'Detalles',
         type: InputType.email,
-        propertyName: 'email',
-        value: item ? item.email : '',
+        propertyName: 'details',
+        value: item ? item.details : '',
         isRequired: true,
         isReadOnly: false
       },
       {
-        name: "Teléfono",
-        placeHolder: 'Teléfono',
-        type: InputType.text,
-        propertyName: 'phone',
-        value: item ? item.phone : '',
-        isReadOnly: false,
-        isRequired:true,
-        textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
+        name: "Responsable 1",
+        placeHolder: 'Responsable 1',
+        type: InputType.select,
+        propertyName: 'responsible1',
+        value: item ? item.responsible1.id : '',
+        source: this.users,
+        sourceText: 'firstName',
+        secondText: 'lastName',
+        sourceValue: 'id',
+        isRequired: true,
+        isReadOnly: false
+      },
+      {
+        name: "Responsable 2",
+        placeHolder: 'Responsable 2',
+        type: InputType.select,
+        propertyName: 'responsible2',
+        value: item ? item.responsible2.id : '',
+        source: this.users,
+        sourceText: 'firstName',
+        secondText: 'lastName',
+        sourceValue: 'id',
+        isRequired: true,
+        isReadOnly: false
       },
       {
         name: "Ubicación",
@@ -102,11 +125,14 @@ export class ProviderNewComponent implements OnInit {
       },
     ];
 
+  console.log('Form Item',it);
+  console.log('Proyect',item);
+
     this.loading = false;
 
     this.formItem.formItems = it;
-    this.formItem.service = this.providerService;
-    this.formItem.formName = 'Crear Nuevo Proveedor de Compra';
+    this.formItem.service = this.service;
+    this.formItem.formName = item? 'Editar Proyecto' : 'Crear Nuevo Proyecto';
     this.formItem.hasSubmit = true;
     this.formItem.hasPrint = false;
     this.formItem.printSectionId = 'p-barcode';
@@ -116,7 +142,7 @@ export class ProviderNewComponent implements OnInit {
     this.formItem.submit = this.submitNew;
     this.formItem.alertComponent = this.alertComponent;
     this.formItem.router = this.router;
-    this.formItem.returnType = new Provider();
+    this.formItem.returnType = new Project();
 
     this.formItem.hasCancel = true;
     this.formItem.cancelText = "Cancelar";
@@ -125,7 +151,7 @@ export class ProviderNewComponent implements OnInit {
     this.formItemReady = true;
   }
 
-  submitNew(result: Provider, service: ProviderService) {
+  submitNew(result: Project, service: ProjectsService) {
     this.loading = true;
     result.id = Number(result.id);
     if (result.id) {
@@ -134,7 +160,7 @@ export class ProviderNewComponent implements OnInit {
         this.alertComponent.type = 'success';
         this.alertComponent.Show().then(res => {
           this.loading = false;
-          this.router.navigate(['/provider-list']);
+          this.router.navigate(['/project-list']);
         });
       });
     } else {
@@ -143,7 +169,7 @@ export class ProviderNewComponent implements OnInit {
         this.alertComponent.type = 'success';
         this.alertComponent.Show().then(res => {
           this.loading = false;
-          this.router.navigate(['/provider-list']);
+          this.router.navigate(['/project-list']);
         });
       })
     }
@@ -161,11 +187,11 @@ export class ProviderNewComponent implements OnInit {
     if (form.touched) {
       this.alertComponent.Confirm().then(res => {
         if (res.dismiss != 'cancel') {
-          this.router.navigate(['/provider-list']);
+          this.router.navigate(['/project-list']);
         }
       });
     } else {
-      this.router.navigate(['/provider-list']);
+      this.router.navigate(['/project-list']);
     }
   }
 
