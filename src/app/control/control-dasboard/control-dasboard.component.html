@@ -1,0 +1,30 @@
+<mat-spinner *ngIf="loading"></mat-spinner>
+<mat-card>
+  <mat-card-title>
+    Boltas del día
+  </mat-card-title>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-sm-4 col-md-4 col-lg-4">
+
+      </div>
+
+      <div class="col-sm-4 col-md-4 col-lg-4">
+
+      </div>
+      <div class="col-sm-4 col-md-4 col-lg-4">
+        <!-- <button mat-menu-item class="action-button" (click)="new()">
+          <mat-icon>
+            add_circle_outline
+          </mat-icon>
+          Agregar Usuario
+        </button> -->
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12 col-lg-12">
+        <app-build-lists *ngIf="showList" [listBuilder]="listMode"></app-build-lists>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

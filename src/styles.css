@@ -28,6 +28,20 @@ body {
   font-size: 48px;
 }
 
+/* Custo button rules */
+.mat-raised-button.mat-primary{
+  background-color: rgba(243, 108, 32, 0.9);
+  transition: 0.5s;
+}
+.mat-raised-button.mat-warn{
+  transition: 0.5s;
+}
+
+.mat-raised-button.mat-primary:hover, .mat-raised-button.mat-warn:hover{
+  text-decoration: underline;
+}
+
+
 /* Rules for using icons as black on a light background. */
 
 .material-icons.md-dark {

@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 import { isNgTemplate } from '@angular/compiler';
 import * as JsBarcode from 'jsbarcode';
 import { GoogleMap, MapMarker } from '@angular/google-maps';
+import { SignaturePad } from 'angular2-signaturepad';
 
 @Component({
   selector: 'app-build-forms',
@@ -20,6 +21,9 @@ export class AutomaticBuildFormsComponent implements OnInit {
   set Map(mp:GoogleMap){
     this.map = mp;
   } 
+  
+  @ViewChild(SignaturePad) signaturePad: SignaturePad;
+  
   marker:google.maps.Marker;
   alertComponent: AlertItem;
   imageError: string;
@@ -33,6 +37,12 @@ export class AutomaticBuildFormsComponent implements OnInit {
   center = { lat:9.936268,lng:-84.1308679 };
   zoom = 17;
   display?: google.maps.LatLngLiteral;
+
+  private signaturePadOptions: Object = { // passed through to szimek/signature_pad constructor
+    'minWidth': 5,
+    'canvasWidth': 480,
+    'canvasHeight': 300
+  };
 
   @Input() form: FormBuilder;
   formGroup: FormGroup;
@@ -117,7 +127,11 @@ export class AutomaticBuildFormsComponent implements OnInit {
           output[it.propertyName] = this.files[it.propertyName];
         }
         else if (it.type == InputType.select) {
-          output[it.propertyName] = it.source.find(x => x[it.sourceValue] == this.formGroup.controls[it.propertyName].value);
+          if(it.sourceValueIsObjet){
+            output[it.propertyName] = it.source.find(x => x[it.sourceValue] == this.formGroup.controls[it.propertyName].value)[it.propertyName];
+          }else{
+            output[it.propertyName] = it.source.find(x => x[it.sourceValue] == this.formGroup.controls[it.propertyName].value);
+          }
         }
         else if (it.type == InputType.number) {
           var p = Number(this.formGroup.controls[it.propertyName].value);
@@ -175,6 +189,10 @@ export class AutomaticBuildFormsComponent implements OnInit {
     }
   }
 
+  clearSignature(sP:SignaturePad){
+      sP.clear();
+  }
+
   fileChangeEvent(fileInput: any, propertyName: string) {
     this.imageError = null;
     if (fileInput.target.files && fileInput.target.files[0]) {
@@ -227,6 +245,10 @@ export class AutomaticBuildFormsComponent implements OnInit {
 
       reader.readAsDataURL(fileInput.target.files[0]);
     }
+  }
+
+  drawComplete() {
+    // will be notified of szimek/signature_pad's onEnd event
   }
 
   removeImage() {

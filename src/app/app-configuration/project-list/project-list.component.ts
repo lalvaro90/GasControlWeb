@@ -63,6 +63,7 @@ export class ProjectListComponent implements OnInit {
     this.listMode.listActions = [
       { service: this.userService, Name: 'Editar', URL: '/project-edit', Icon: 'edit ', callback: undefined, params: ['id'], isEnable:this.validateAccess().canEdit, router:this.router },
       { service: this.userService, Name: 'Eliminar', URL: undefined, Icon: 'delete_sweep ', callback: this.deleteItem, params: undefined, isEnable:this.validateAccess().canDelete, router:this.router },
+      { service: this.userService, Name: 'Imagenes', URL: '/images/project/pictures/:id', Icon: 'image ', callback: undefined, params: ['id'], isEnable:this.validateAccess().canEdit, router:this.router },
     ];
 
     this.projectService.get().subscribe(res=> {

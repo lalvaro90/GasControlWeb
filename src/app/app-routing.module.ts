@@ -25,7 +25,8 @@ const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/login' },
   {path:'login', component: LoginComponent},
   {path:'images/:service/:property/:id', component: AddImageComponent},
-  {path: 'config', loadChildren: './app-configuration/app-configuration.module#AppConfigurationModule'}
+  {path: 'config', loadChildren: './app-configuration/app-configuration.module#AppConfigurationModule'},
+  {path: 'control', loadChildren: './control/control.module#ControlModule'}
 ];
 
 @NgModule({

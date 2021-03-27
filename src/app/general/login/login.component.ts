@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
            loggedUser.firstName = data.firstName;
            loggedUser.permissions = data.permissions;
            this.userService.loggedUser.next(loggedUser);
-           this.router.navigate(['/config/user-list']);
+           this.router.navigate(['/control/control-dashboard']);
          }
        }
    }
@@ -73,7 +73,7 @@ export class LoginComponent implements OnInit {
      this.userService.login(user).subscribe(res => {
        this.userService.loggedUser.next(res);
        this.saveLocalData(res);
-       this.router.navigate(['/config/user-list']);
+       this.router.navigate(['/control/control-dashboard']);
      },err => {
 
         if (err instanceof HttpErrorResponse) {
@@ -99,7 +99,6 @@ export class LoginComponent implements OnInit {
   }
 
   rememberme($event:any){
-    debugger;
     if($event.checked){
       window.localStorage.setItem('AssetAppDataUserName', this.formGroup.controls['email'].value);
       this.rememberUser = true;

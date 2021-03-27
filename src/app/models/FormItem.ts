@@ -30,10 +30,12 @@ export class FormItem {
   propertyName:string;
   type:InputType;
   prefix:string;
+  suffix:string;
   placeHolder: string;
   source:Array<any>
   sourceText:string;
   secondText:string;
+  sourceValueIsObjet:boolean = true;
   sourceValue:string;
   value:any;
   img:string;
@@ -75,4 +77,5 @@ export enum InputType{
   textarea = 'textarea',
   location = 'location',
   list = 'list',
+  signature = 'signature',
 }

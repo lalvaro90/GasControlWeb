@@ -10,6 +10,11 @@
 <div class="row listContainer">
   <div class="col-sm-12 col-md-12 col-lg-12">
     <mat-spinner *ngIf="loading"></mat-spinner>
+    <mat-form-field *ngIf="listBuilder.hasSearch">
+      <mat-label>{{searchText}}</mat-label>
+      <input matInput placeholder="Buscar" value="" (change)="search($event,value)" >
+    </mat-form-field>
+
     <mat-table [dataSource]="listBuilder.list">
       <ng-container *ngFor="let col of listBuilder.listItems" [matColumnDef]="col.PropertyName">
         <mat-header-cell *matHeaderCellDef> {{col.HeaderText}} </mat-header-cell>

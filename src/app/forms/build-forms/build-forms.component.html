@@ -10,34 +10,41 @@
           <mat-label>{{item.name}}</mat-label>
           <mat-select formControlName="{{item.propertyName}}">
             <mat-option value="0" selected>Selectione un Opción</mat-option>
-            <mat-option *ngFor="let op of item.source" [value]="op[item.sourceValue]">{{op[item.sourceText]}} {{op[item.secondText]}}</mat-option>
+            <mat-option *ngFor="let op of item.source" [value]="op[item.sourceValue]">{{op[item.sourceText]}}
+              {{op[item.secondText]}}</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field
-          *ngIf="item.type != 'file' && item.type != 'select' && item.type != 'submit'
+        <mat-form-field *ngIf="item.type != 'file' && item.type != 'select' && item.type != 'submit'
           && item.type != 'cancel' && item.type != 'hidden' && item.type != 'barcode'
-          && item.type != 'textarea' && item.type != 'location'">
+          && item.type != 'textarea' && item.type != 'location' && item.type != 'signature'">
           <mat-label>
             {{item.name}}
           </mat-label>
-          <input *ngIf="item.textMask" matInput type="{{item.type}}" [textMask]="{mask: item.textMask}" placeholder="{{item.placeHolder}}" formControlName="{{item.propertyName}}"
-            [readonly]="item.isReadOnly" />
-          <input *ngIf="!item.textMask" matInput type="{{item.type}}" placeholder="{{item.placeHolder}}" formControlName="{{item.propertyName}}"
-          [readonly]="item.isReadOnly" />
+          <input *ngIf="item.textMask" matInput type="{{item.type}}" [textMask]="{mask: item.textMask}"
+            placeholder="{{item.placeHolder}}" formControlName="{{item.propertyName}}" [readonly]="item.isReadOnly" />
+          <input *ngIf="!item.textMask" matInput type="{{item.type}}" placeholder="{{item.placeHolder}}"
+            formControlName="{{item.propertyName}}" [readonly]="item.isReadOnly" />
           <span matPrefix *ngIf="item.prefix">{{item.prefix}}</span>
+          <span matSuffix *ngIf="item.suffix">{{item.suffix}}</span>
         </mat-form-field>
+        <!-- Signature Section -->
+        <fieldset matInput class="form-group" style="border: 1px black solid;" *ngIf="item.type == 'signature'">
+          <label>{{item.name}}</label>
+          <signature-pad [options]="signaturePadOptions" #sP formControlName="{{item.propertyName}}" (onEndEvent)="drawComplete()"></signature-pad>
+          <button mat-raised-button color="warn" (click)="clearSignature(sP)">Limpiar</button>
+        </fieldset>
         <!-- <mat-form-field > -->
-          <fieldset matInput *ngIf="item.type == 'file'" class="form-group">
-            <label>{{item.name}}</label>
-            {{imageError}}
-            <div class="custom-file fileInputProfileWrap">
-              <input type="file" (change)="fileChangeEvent($event,item.propertyName)"
-                formControlName="{{item.propertyName}}" class="fileInputProfile" [readonly]="item.isReadOnly">
-              <div class="img-space">
-                <img [src]="files[item.propertyName]" class="img-responsive">
-              </div>
+        <fieldset matInput *ngIf="item.type == 'file'" class="form-group">
+          <label>{{item.name}}</label>
+          {{imageError}}
+          <div class="custom-file fileInputProfileWrap">
+            <input type="file" (change)="fileChangeEvent($event,item.propertyName)"
+              formControlName="{{item.propertyName}}" class="fileInputProfile" [readonly]="item.isReadOnly">
+            <div class="img-space">
+              <img [src]="files[item.propertyName]" class="img-responsive">
             </div>
-          </fieldset>
+          </div>
+        </fieldset>
         <!-- </mat-form-field> -->
         <fieldset matInput *ngIf="item.type == 'location'">
           <label>{{item.name}}</label>
@@ -47,7 +54,7 @@
           <table>
             <tr>
               <td colspan="3">
-                  <strong>{{item.prefix}}</strong>
+                <strong>{{item.prefix}}</strong>
               </td>
             </tr>
             <tr>
@@ -60,12 +67,13 @@
             </tr>
             <tr>
               <td colspan="3">
-                  <strong>Traesa {{item.value}}</strong>
+                <strong>Traesa {{item.value}}</strong>
               </td>
             </tr>
           </table>
         </div>
-        <textarea *ngIf="item.type == 'textarea'" rows="10" cols="35" formControlName="{{item.propertyName}}"></textarea>
+        <textarea *ngIf="item.type == 'textarea'" rows="10" cols="35"
+          formControlName="{{item.propertyName}}"></textarea>
         <input type="hidden" *ngIf="item.type == 'hidden'" [value]="item.value" formControlName="{{item.propertyName}}">
       </div>
     </div>
@@ -77,9 +85,9 @@
         (click)="register()">{{form.submitText}}</button>
       <button *ngIf="form.hasCancel" mat-raised-button class="space-r-10" color="warn"
         (click)="clear()">{{form.cancelText}}</button>
-        <button *ngIf="form.hasPrint" mat-raised-button class="space-r-10" color="accent"
-        [styleSheetFile]="form.printStyleRef" [printSectionId]="form.printSectionId" ngxPrint
-          >{{form.printText}}</button>
+      <button *ngIf="form.hasPrint" mat-raised-button class="space-r-10" color="accent"
+        [styleSheetFile]="form.printStyleRef" [printSectionId]="form.printSectionId"
+        ngxPrint>{{form.printText}}</button>
     </div>
   </form>
 </mat-card>

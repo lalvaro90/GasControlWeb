@@ -1,1 +1,43 @@
-<p>add-image works!</p>
+
+<mat-card style="width:100%;height: 100%;">
+    <mat-card-title>
+        {{itemName}}
+    </mat-card-title>
+    <mat-card-header>
+        <button mat-mini-fab color="accent" style="left: 90%;" (click)="pushNewImage()">
+            <mat-icon>plus_one</mat-icon>
+        </button>
+    </mat-card-header>
+    <div class="row">
+        <mat-spinner *ngIf="!isReady"></mat-spinner>
+        <form *ngIf="isReady" [formGroup]="formGroup">
+            <div class="row">
+                <div *ngFor="let item of images; index as i" class="col-sm-6 col-md-6 col-lg-6" style="padding: 10px;">
+                    <fieldset matInput class="form-group">
+                        <label>Subir Imagen {{i+1}}</label>
+                        {{imageError}}
+                        <button mat-button color="warn" (click)="removeFomrImage(i)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                        <div class="custom-file fileInputProfileWrap">
+                            <input type="file" (change)="fileChangeEvent($event,i)" formControlName="{{i}}-{{item.itemId}}"
+                                class="fileInputProfile">
+                            <div class="img-space">
+                                <img [src]="files[i]" class="img-responsive">
+                            </div>
+                        </div>
+                        
+                    </fieldset>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+
+    </div>
+    <mat-card-footer>
+        <div class="row">
+            <button mat-raised-button  class="img-btn" color="primary" (click)="saveImages()" >Guardar Imagenes</button>
+        </div>
+    </mat-card-footer>
+</mat-card>

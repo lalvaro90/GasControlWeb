@@ -4,17 +4,21 @@
       <mat-icon>more_vert</mat-icon> Menú
     </button>
     <mat-menu #main="matMenu">
-      <button mat-menu-item [matMenuTriggerFor]="access">
-        <mat-icon>security</mat-icon>
-        <span>Acceso</span>
+      <button mat-menu-item [routerLink]="['/control/control-dashboard']">
+        <mat-icon>home</mat-icon>
+        <span>Inicio</span>
       </button>
-      <button mat-menu-item [routerLink]="['/assets-list']">
-        <mat-icon>computer</mat-icon>
-        <span>Activos Fijos</span>
+      <button mat-menu-item [routerLink]="['/control/new-transfer']">
+        <mat-icon>send</mat-icon>
+        <span>Transferir Combustible</span>
       </button>
       <button mat-menu-item [matMenuTriggerFor]="reports">
         <mat-icon>text_snippet</mat-icon>
         <span>Reportes</span>
+      </button>      
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        Salir
       </button>
     </mat-menu>
     <mat-menu #reports="matMenu">
@@ -33,22 +37,6 @@
       <button mat-menu-item [routerLink]="['/report-main']">
         <mat-icon>label</mat-icon>
         <span>M.E.P.</span>
-      </button>
-    </mat-menu>
-    <mat-menu #access="matMenu">
-      <button mat-menu-item (click)="logout()">
-        <mat-icon>exit_to_app</mat-icon>
-        Salir
-      </button>
-      <button mat-menu-item [routerLink]="['/user-list']">
-        <mat-icon>
-          supervised_user_circle
-        </mat-icon>
-        Usuarios
-      </button>
-      <button mat-menu-item [routerLink]="['/user-security']">
-        <mat-icon>list_alt</mat-icon>
-        Permisos
       </button>
     </mat-menu>
   </div>
@@ -84,7 +72,7 @@
       </button>
       <button mat-menu-item [routerLink]="['/config/user-security']">
         <mat-icon>
-          aspect_ratio
+          security
         </mat-icon>
         Seguridad
       </button>

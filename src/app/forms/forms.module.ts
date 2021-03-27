@@ -7,6 +7,7 @@ import { NgxPrintModule } from 'ngx-print';
 import { BuildListsComponent } from './build-lists/build-lists.component';
 import { TextMaskModule } from 'angular2-text-mask';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { SignaturePadModule } from 'angular2-signaturepad';
 
 
 
@@ -23,6 +24,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
     NgxPrintModule,
     TextMaskModule,
     GoogleMapsModule,
+    SignaturePadModule,
   ],
   exports:[
     AutomaticBuildFormsComponent,

@@ -1,0 +1,15 @@
+.img-space img {
+  max-height: 200px;
+  max-width : 90%;
+  padding   : 15px;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  padding      : 15px;
+}
+
+.img-btn {
+  margin-top : 40px;
+  margin-left: 15px;
+}

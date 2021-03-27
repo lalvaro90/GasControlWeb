@@ -28,7 +28,7 @@ export class MachineNewComponent implements OnInit {
   userTypes: Array<UserType>;
   users:Array<User>;
   projects:Array<Project>;
-  isTank = [{id:false, name:'No'}, {id:true, name:'Si'}];
+  isTank:Array<TankOptions> = [{isTank:false, name:'No'}, {isTank:true, name:'Si'}];
 
   constructor(
     private machineService: MachineService,
@@ -54,7 +54,6 @@ export class MachineNewComponent implements OnInit {
             let id = params['id'];
             if (id) {
               this.machineService.getById(id).subscribe(res => {
-                debugger;
                 this.machine = res;
                 this.setupForm(this.machine);
               });
@@ -162,7 +161,8 @@ export class MachineNewComponent implements OnInit {
         isRequired:true,
         source: this.isTank,
         sourceText: 'name',
-        sourceValue: 'id'
+        sourceValue: 'isTank',
+        sourceValueIsObjet:true,
         // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
       },
       {
@@ -201,8 +201,10 @@ export class MachineNewComponent implements OnInit {
 
   submitNew(result: Machine, service: MachineService) {
     this.loading = true;
+    debugger;
     result.id = Number(result.id);
     if (result.id) {
+      result.isTank = result.isTank;
       service.edit(result, result.id).subscribe(res => {
         this.alertComponent.text = 'Maquina modificada exitosamente!';
         this.alertComponent.type = 'success';
@@ -243,4 +245,9 @@ export class MachineNewComponent implements OnInit {
     }
   }
 
+}
+
+export class TankOptions{
+  isTank:boolean;
+  name:string;
 }

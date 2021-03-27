@@ -10,6 +10,6 @@ export class MachineGasRefileService extends AppService<MachineGasRefile> {
 
   constructor(client:HttpClient)
   {
-    super(client,'configurations');
+    super(client,'MachineGasRefile');
    }
 }

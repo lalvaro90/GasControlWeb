@@ -24,13 +24,15 @@ export class UserListComponent implements OnInit {
     });
 
     this.listMode.hasActions = true;
+    this.listMode.hasSearch = true;
   }
 
-  ngOnInit() {
-    let permDelete = 'user_delete';
-    let permEdit = 'user_edit';
+  validateAccess(){
     let canDelete = false;
     let canEdit = false;
+    let permDelete = 'user_delete';
+    let permEdit = 'user_edit';
+    let fullaccess = 'full_access';
 
     if(this.user.permissions.indexOf(permDelete)>-1){
       canDelete = true;
@@ -39,6 +41,16 @@ export class UserListComponent implements OnInit {
     if(this.user.permissions.indexOf(permEdit)>-1){
       canEdit = true;
     }
+
+    if(this.user.permissions.indexOf(fullaccess)>-1){
+      canEdit = true;
+      canDelete = true;
+    }
+    return {canDelete, canEdit}
+  }
+
+  ngOnInit() {
+    this.validateAccess();
 
     this.listMode.listItems = [
       { HeaderText: 'Nombre', PropertyName: 'firstName', SecondPropertyName:undefined, isObject:false, subProperty1:undefined, subProperty2: undefined},
@@ -49,8 +61,8 @@ export class UserListComponent implements OnInit {
     ];
 
     this.listMode.listActions = [
-      { service: this.userService, Name: 'Editar', URL: '/user-edit', Icon: 'edit ', callback: undefined, params: ['id'], isEnable:canEdit, router:this.router },
-      { service: this.userService, Name: 'Eliminar', URL: undefined, Icon: 'delete_sweep ', callback: this.deleteItem, params: undefined, isEnable:canDelete, router:this.router },
+      { service: this.userService, Name: 'Editar', URL: '/user-edit', Icon: 'edit ', callback: undefined, params: ['id'], isEnable:this.validateAccess().canEdit, router:this.router },
+      { service: this.userService, Name: 'Eliminar', URL: undefined, Icon: 'delete_sweep ', callback: this.deleteItem, params: undefined, isEnable:this.validateAccess().canDelete, router:this.router },
     ];
 
     this.loading = true;
