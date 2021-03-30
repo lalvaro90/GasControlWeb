@@ -22,6 +22,7 @@ export class Machine
         responsible3: User;
         images: ItemImage[];
         isTank: boolean;
+        useHorimeter: boolean;
 
         //Admin Properties
         status: ItemStatus;

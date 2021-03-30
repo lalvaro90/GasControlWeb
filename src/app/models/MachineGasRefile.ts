@@ -21,6 +21,8 @@ export class MachineGasRefile
         project: Project;
         dispenserSignature: string;
         receiverSignature: string;
+        LitersCount:number;
+        LiterCounterPicture: string;
 
         status: ItemStatus;
     }

@@ -8,9 +8,13 @@
         <mat-icon>home</mat-icon>
         <span>Inicio</span>
       </button>
-      <button mat-menu-item [routerLink]="['/control/new-transfer']">
+      <button mat-menu-item [routerLink]="['/control/new-transfer']" matTooltip="Transferir hacia una maquina">
         <mat-icon>send</mat-icon>
         <span>Transferir Combustible</span>
+      </button>
+      <button mat-menu-item [routerLink]="['/control/new-transfer-tank']" matTooltip="Transferir hacia una Tanqueta">
+        <mat-icon>send</mat-icon>
+        <span>Cargar Tanqueta</span>
       </button>
       <button mat-menu-item [matMenuTriggerFor]="reports">
         <mat-icon>text_snippet</mat-icon>

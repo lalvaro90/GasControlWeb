@@ -22,9 +22,11 @@ export class FormBuilder{
   alertComponent: AlertItem;
   router:Router;
   mainItemId: any;
+  context:any;
 }
 
 export class FormItem {
+  context:any;
   Id:number;
   name:string;
   propertyName:string;
@@ -45,6 +47,8 @@ export class FormItem {
   isRequired:boolean;
   isReadOnly:boolean;
   textMask: any; 
+  selectOnChange:any;
+  onChange:any;
 }
 
 

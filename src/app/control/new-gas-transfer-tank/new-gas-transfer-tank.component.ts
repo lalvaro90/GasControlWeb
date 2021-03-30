@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AutomaticBuildFormsComponent } from 'src/app/forms/build-forms/build-forms.component';
 import { AlertItem } from 'src/app/helpers/AlertItem';
 import { Configuration } from 'src/app/models/Configuration';
@@ -16,11 +16,11 @@ import { ProjectsService } from 'src/app/Services/projects.service';
 import { UserService } from 'src/app/Services/user.service';
 
 @Component({
-  selector: 'app-new-gas-transfer',
-  templateUrl: './new-gas-transfer.component.html',
-  styleUrls: ['./new-gas-transfer.component.css']
+  selector: 'app-new-gas-transfer-tank',
+  templateUrl: './new-gas-transfer-tank.component.html',
+  styleUrls: ['./new-gas-transfer-tank.component.css']
 })
-export class NewGasTransferComponent implements OnInit {
+export class NewGasTransferTankComponent implements OnInit {
   formItem = new FormBuilder;
   alertComponent: AlertItem;
   formItemReady = false;
@@ -63,7 +63,7 @@ export class NewGasTransferComponent implements OnInit {
     await this.configService.get().toPromise().then(res => { this.config = res[0]; });
     await this.machineService.get().toPromise().then(res => {
       this.machines = res;
-      this.equipment = this.machines.filter(x => x.isTank == false);
+      this.equipment = this.machines.filter(x => x.isTank == true);
       this.tanks = this.machines.filter(x => x.isTank == true);
     });
 
@@ -265,7 +265,11 @@ export class NewGasTransferComponent implements OnInit {
     })
 
     let machineid = this.context.formGroup.controls['refilingMaching'].value;
-    let machine = this.context.form.formItems.find(x=> x.propertyName == 'refilingMaching').source.find(x=> x.id == machineid);
+
+    var list = this.context.form.formItems.find(x=> x.propertyName == 'refilingMaching').source;
+    this.context.form.formItems.find(x=> x.propertyName == 'tank').source = list.filter(x => x.id != machineid);
+
+    let machine = list.find(x=> x.id == machineid);
     if(machine.useHorimeter){
       this.context.formGroup.controls['hourmeter'].disable();
     }else{

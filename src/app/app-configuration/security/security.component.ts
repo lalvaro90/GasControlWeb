@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl } from '@angular/forms';
@@ -6,6 +6,7 @@ import { UserService } from 'src/app/Services/user.service';
 import { User } from 'src/app/models/User';
 import { AlertItem } from 'src/app/helpers/AlertItem';
 import { Router } from '@angular/router';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-security',
@@ -14,6 +15,11 @@ import { Router } from '@angular/router';
 })
 export class SecurityComponent implements OnInit {
 
+  toggle:MatSlideToggle;
+  @ViewChild(MatSlideToggle) 
+  set _toggle(tg:MatSlideToggle){
+    this.toggle = tg;
+  }  
   user:User;
   _jsonURL = 'assets/securityItems.json';
   formGroup:FormGroup;
@@ -45,11 +51,26 @@ export class SecurityComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.get().subscribe(res => this.users = res);
+    this.userService.get().subscribe(res => {
+      this.users = res;
+    });
   }
 
   selectUser($event){
     this.user = this.users.find(x=> x.id == $event.value);
+
+    if(this.user.permissions.indexOf('full_access')>-1){
+      this.Permissions.forEach(it => {
+        it.permissions.forEach(el => {
+          let ctl = this.formGroup.controls[el.value];
+          if(ctl){
+            ctl.setValue(true);
+          }
+        });
+      });
+      this.toggle.writeValue(true);
+    }
+
     let values = this.user.permissions.split(';');
     values.forEach(it => {
       if(it.length>0){

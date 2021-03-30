@@ -1,114 +1,22 @@
 [
   {
-    "name":"Estado de Activos",
+    "name":"Projectos",
     "permissions":[
       {
         "name":"Crear",
-        "value":"states_new"
+        "value":"project_new"
       },
       {
         "name":"Editar",
-        "value":"states_edit"
+        "value":"project_edit"
       },
       {
         "name":"Ver",
-        "value":"states_view"
+        "value":"project_view"
       },
       {
         "name":"Eliminar",
-        "value":"states_delete"
-      }
-    ]
-  },
-  {
-    "name":"Activos",
-    "permissions":[
-      {
-        "name":"Crear",
-        "value":"asset_new"
-      },
-      {
-        "name":"Editar",
-        "value":"asset_edit"
-      },
-      {
-        "name":"Ver",
-        "value":"asset_view"
-      },
-      {
-        "name":"Dar de Baja",
-        "value":"asset_delete"
-      },
-      {
-        "name":"Eliminar Notas",
-        "value":"asset_delete_notes"
-      },
-      {
-        "name":"Transferir",
-        "value":"asset_transfer"
-      }
-    ]
-  },
-  {
-    "name":"Personas",
-    "permissions":[
-      {
-        "name":"Crear",
-        "value":"responsible_new"
-      },
-      {
-        "name":"Editar",
-        "value":"responsible_edit"
-      },
-      {
-        "name":"Ver",
-        "value":"responsible_view"
-      },
-      {
-        "name":"Eliminar",
-        "value":"responsible_delete"
-      }
-    ]
-  },
-  {
-    "name":"Depreciación",
-    "permissions":[
-      {
-        "name":"Crear",
-        "value":"depreciation_new"
-      },
-      {
-        "name":"Editar",
-        "value":"depreciation_edit"
-      },
-      {
-        "name":"Ver",
-        "value":"depreciation_view"
-      },
-      {
-        "name":"Eliminar",
-        "value":"depreciation_delete"
-      }
-    ]
-  },
-  {
-    "name":"Ubicación",
-    "permissions":[
-      {
-        "name":"Crear",
-        "value":"location_new"
-      },
-      {
-        "name":"Editar",
-        "value":"location_edit"
-      },
-      {
-        "name":"Ver",
-        "value":"location_view"
-      },
-      {
-        "name":"Eliminar",
-        "value":"location_delete"
+        "value":"project_delete"
       }
     ]
   },
@@ -134,23 +42,23 @@
     ]
   },
   {
-    "name":"Metodos de Compra",
+    "name":"Maquinas/Equipos",
     "permissions":[
       {
         "name":"Crear",
-        "value":"acquisition_new"
+        "value":"machine_new"
       },
       {
         "name":"Editar",
-        "value":"acquisition_edit"
+        "value":"machine_edit"
       },
       {
         "name":"Ver",
-        "value":"acquisition_view"
+        "value":"machine_view"
       },
       {
         "name":"Eliminar",
-        "value":"acquisition_delete"
+        "value":"machine_delete"
       }
     ]
   },

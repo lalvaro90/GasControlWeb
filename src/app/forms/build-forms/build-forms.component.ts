@@ -54,13 +54,14 @@ export class AutomaticBuildFormsComponent implements OnInit {
           JsBarcode(`#${it.propertyName}`, it.barcode);
         });
       }
-    })
+    });
   }
 
   ngAfterViewInit() {
     console.log(this.map);
     if (this.map) {
-      this.getCurrentLocation()
+      this.getCurrentLocation();
+      this.form.context = this;
     }
   }
 
@@ -94,10 +95,22 @@ export class AutomaticBuildFormsComponent implements OnInit {
     this.initializeFormGroup();
   }
 
+  selectOnChange(item:FormItem){
+    console.log('Item',item);
+    item.selectOnChange();
+  }
+
   private initializeFormGroup() {
     let config = {};
     this.form.formItems.forEach(it => {
-      config[it.propertyName] = new FormControl('', it.isRequired ? Validators.required : undefined);
+      if(it.type == InputType.date){
+        let date = new Date();
+        console.log('Date',date);
+        config[it.propertyName] = new FormControl(`${date.getUTCDay()}/${date.getUTCMonth()}/${date.getUTCFullYear()}`,it.isReadOnly? Validators.required : undefined)
+      }else{
+        config[it.propertyName] = new FormControl('', it.isRequired ? Validators.required : undefined);
+      }
+      it.context = this;
     });
     this.formGroup = new FormGroup(config);
     this.form.formItems.forEach(item => {
@@ -108,6 +121,9 @@ export class AutomaticBuildFormsComponent implements OnInit {
       }
       else if(item.type == InputType.location){
         this.marker = new google.maps.Marker({map:this.map?.googleMap, position: JSON.parse(item.value)})
+      }
+      else if(item.type == InputType.date){
+        this.formGroup.controls[item.propertyName].setValue(new Date(item.value).toISOString().slice(0, -1))
       }
       else {
         this.formGroup.controls[item.propertyName].setValue(item.value);

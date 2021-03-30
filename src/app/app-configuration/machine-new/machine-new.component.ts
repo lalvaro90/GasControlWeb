@@ -55,6 +55,7 @@ export class MachineNewComponent implements OnInit {
             if (id) {
               this.machineService.getById(id).subscribe(res => {
                 this.machine = res;
+                console.log('Machine',res);
                 this.setupForm(this.machine);
               });
             }
@@ -143,7 +144,7 @@ export class MachineNewComponent implements OnInit {
         placeHolder: 'Ubicación',
         type: InputType.select,
         propertyName: 'location',
-        value: item ? item.location : '',
+        value: item?  item.location.id : 0,
         isReadOnly: false,
         isRequired:true,
         source: this.projects,
@@ -157,6 +158,20 @@ export class MachineNewComponent implements OnInit {
         type: InputType.select,
         propertyName: 'isTank',
         value: item ? item.isTank : false,
+        isReadOnly: false,
+        isRequired:true,
+        source: this.isTank,
+        sourceText: 'name',
+        sourceValue: 'isTank',
+        sourceValueIsObjet:true,
+        // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
+      },
+      {
+        name: "Usa Horimetro",
+        placeHolder: 'Usa Horimetro',
+        type: InputType.select,
+        propertyName: 'useHorimeter',
+        value: item ? item.useHorimeter : false,
         isReadOnly: false,
         isRequired:true,
         source: this.isTank,

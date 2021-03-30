@@ -8,9 +8,9 @@
       <div *ngFor="let item of form.formItems" class="col-sm-6 col-md-6 col-lg-6">
         <mat-form-field *ngIf="item.type == 'select'">
           <mat-label>{{item.name}}</mat-label>
-          <mat-select formControlName="{{item.propertyName}}">
+          <mat-select formControlName="{{item.propertyName}}" (change)="selectOnChange(item)" >
             <mat-option value="0" selected>Selectione un Opción</mat-option>
-            <mat-option *ngFor="let op of item.source" [value]="op[item.sourceValue]">{{op[item.sourceText]}}
+            <mat-option *ngFor="let op of item.source" (click)="selectOnChange(item)" [value]="op[item.sourceValue]">{{op[item.sourceText]}}
               {{op[item.secondText]}}</mat-option>
           </mat-select>
         </mat-form-field>

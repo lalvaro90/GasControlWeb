@@ -55,6 +55,7 @@ export class MachineListComponent implements OnInit {
 
     let machine:Machine = null;
     this.listMode.listItems = [
+      { HeaderText: 'Maquina', PropertyName: 'machineId', SecondPropertyName:undefined, isObject:false, subProperty1:undefined, subProperty2: undefined },
       { HeaderText: 'Marca', PropertyName: 'brand', SecondPropertyName:undefined, isObject:false, subProperty1:undefined, subProperty2: undefined },
       { HeaderText: 'Modelo', PropertyName: 'model', SecondPropertyName:undefined, isObject:false, subProperty1:undefined, subProperty2: undefined },
       { HeaderText: 'Serie', PropertyName: 'series', SecondPropertyName:undefined, isObject:false, subProperty1:undefined, subProperty2: undefined },

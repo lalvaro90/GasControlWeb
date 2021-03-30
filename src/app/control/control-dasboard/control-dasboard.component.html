@@ -1,29 +1,109 @@
 <mat-spinner *ngIf="loading"></mat-spinner>
 <mat-card>
   <mat-card-title>
-    Boltas del día
+    Dashboard
   </mat-card-title>
   <mat-card-content>
     <div class="row">
       <div class="col-sm-4 col-md-4 col-lg-4">
-
+        <mat-card>
+          <mat-card-title>
+            Maquinas
+          </mat-card-title>
+          <mat-card-content>
+            Maquinas Activas: {{machines.length}}
+          </mat-card-content>
+        </mat-card>
       </div>
-
       <div class="col-sm-4 col-md-4 col-lg-4">
-
+        <mat-card>
+          <mat-card-title>
+            Tanquetas
+          </mat-card-title>
+          <mat-card-content>
+            <div class="row">
+              <div class="col-sm-6 col-md-6 col-lg-6">
+                <h6>Tanquetas Activas: </h6>
+              </div>
+              <div class="col-sm-6 col-md-6 col-lg-6">
+                <h6>{{tanks.length}}</h6>
+              </div>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="row" style="margin-top: 5px;">
+              <div class="col-sm-10 col-md-10 col-lg-10">
+                <h5>Capacidades: </h5>
+                <div class="row">
+                  <div class="col-sm-3 col-md-3 col-lg-3">
+                      <h6>Tanqueta</h6>
+                  </div>
+                  <div class="col-sm-3 col-md-3 col-lg-3">
+                    <h6>Capacidad</h6>
+                  </div>
+                  <div class="col-sm-3 col-md-3 col-lg-3">
+                    <h6>Actual</h6>
+                  </div>
+                  <div class="col-sm-3 col-md-3 col-lg-3">
+                    <h6>%</h6>
+                  </div>
+                </div>
+                <div class="row" *ngFor="let t of tanks">
+                  <div class="col-sm-3 col-md-3 col-lg-3">
+                      <span>{{t.machineId}}</span>
+                  </div>
+                  <div class="col-sm-3 col-md-3 col-lg-3">
+                    <span>{{t.tankCapacity}}</span>
+                  </div>
+                  <div class="col-sm-3 col-md-3 col-lg-3">
+                    <span>{{t.currentCapacity}}</span>
+                  </div>
+                  <div class="col-sm-3 col-md-3 col-lg-3">
+                    <span>{{(t.currentCapacity/t.tankCapacity)*100 | number: '1.0-2'}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
       </div>
       <div class="col-sm-4 col-md-4 col-lg-4">
-        <!-- <button mat-menu-item class="action-button" (click)="new()">
-          <mat-icon>
-            add_circle_outline
-          </mat-icon>
-          Agregar Usuario
-        </button> -->
+        <mat-card>
+          <mat-card-title>
+            Proyectos
+          </mat-card-title>
+          <mat-card-content>
+            Projectos Activos: {{projects.length}}
+          </mat-card-content>
+        </mat-card>
       </div>
     </div>
     <div class="row">
       <div class="col-sm-12 col-md-12 col-lg-12">
-        <app-build-lists *ngIf="showList" [listBuilder]="listMode"></app-build-lists>
+        &nbsp;
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12 col-lg-12">
+        <mat-card>
+          <mat-card-title>
+            <div class="row">
+              <div class="col-sm-10 col-md-10 col-lg-10">
+                <span>Boletas del día</span>
+              </div>
+              <div class="col-sm-2 col-md-2 col-lg-2">
+                <mat-icon matTooltip="Ver reporte del día">visibility</mat-icon>
+              </div>
+            </div>
+          </mat-card-title>
+          <mat-card-content>
+            <div class="row">
+              <div class="col-sm-12 col-md-12 col-lg-12">
+                <mat-spinner *ngIf="!showList"></mat-spinner>
+                <app-build-lists *ngIf="showList" [listBuilder]="listMode"></app-build-lists>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
       </div>
     </div>
   </mat-card-content>
