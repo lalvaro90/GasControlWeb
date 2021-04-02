@@ -44,6 +44,17 @@ export class ControlDasboardComponent implements OnInit {
     this.getTodayData();
   }
 
+  getCurentCapacity(m:Machine):number{
+    let cap = 0;
+    try{
+
+        cap = (m.currentCapacity / m.tankCapacity) * 100
+    }catch{
+        console.log('Error Calculating Tank Capacity')
+    }
+    return cap;
+}
+
   async getTodayData() {
     await this.machineRefileService.getTodayData().toPromise().then(res => {
       this.refiles = res;

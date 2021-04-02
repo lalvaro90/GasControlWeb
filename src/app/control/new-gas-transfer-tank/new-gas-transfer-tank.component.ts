@@ -201,18 +201,8 @@ export class NewGasTransferTankComponent implements OnInit {
       name: "Conteo de la maria",
       placeHolder: 'Conteo de la maria',
       type: InputType.number,
-      propertyName: 'receiver',
+      propertyName: 'LitersCount',
       value: item ? item.LitersCount : false,
-      isReadOnly: true,
-      isRequired: true,
-      // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
-    },
-    {
-      name: "Foto del Contador",
-      placeHolder: 'Foto del Contador',
-      type: InputType.file,
-      propertyName: 'receiver',
-      value: item ? item.LiterCounterPicture : false,
       isReadOnly: true,
       isRequired: true,
       // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
@@ -224,6 +214,16 @@ export class NewGasTransferTankComponent implements OnInit {
       propertyName: 'id',
       value: item ? <number>item.id : '',
       isReadOnly: false
+    },
+    {
+      name: "Foto del Contador",
+      placeHolder: 'Foto del Contador',
+      type: InputType.file,
+      propertyName: 'LiterCounterPicture',
+      value: item ? item.LiterCounterPicture : false,
+      isReadOnly: true,
+      isRequired: true,
+      // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
     },
     {
       name: "Firma de quien recibe",
@@ -284,11 +284,11 @@ export class NewGasTransferTankComponent implements OnInit {
     result.id = Number(result.id);
     if (result.id) {
       service.edit(result, result.id).subscribe(res => {
-        this.alertComponent.text = 'Maquina modificada exitosamente!';
+        this.alertComponent.text = 'Combustible Transferido exitosamente!';
         this.alertComponent.type = 'success';
         this.alertComponent.Show().then(res => {
           this.loading = false;
-          this.router.navigate(['/control-dashboard']);
+          this.router.navigate(['control/control-dashboard']);
         });
       });
     } else {
@@ -297,8 +297,8 @@ export class NewGasTransferTankComponent implements OnInit {
         this.alertComponent.type = 'success';
         this.alertComponent.Show().then(res => {
           this.loading = false;
-          this.router.navigate(['/control-dashboard']);
-        });
+          this.router.navigate(['control/control-dashboard']);
+        })
       })
     }
   }
@@ -315,11 +315,11 @@ export class NewGasTransferTankComponent implements OnInit {
     if (form.touched) {
       this.alertComponent.Confirm().then(res => {
         if (res.dismiss != 'cancel') {
-          this.router.navigate(['/machine-list']);
+          this.router.navigate(['control/control-dashboard']);
         }
       });
     } else {
-      this.router.navigate(['/machine-list']);
+      this.router.navigate(['control/control-dashboard']);
     }
   }
 

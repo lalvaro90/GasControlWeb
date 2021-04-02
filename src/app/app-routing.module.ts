@@ -26,7 +26,8 @@ const routes: Routes = [
   {path:'login', component: LoginComponent},
   {path:'images/:service/:property/:id', component: AddImageComponent},
   {path: 'config', loadChildren: './app-configuration/app-configuration.module#AppConfigurationModule'},
-  {path: 'control', loadChildren: './control/control.module#ControlModule'}
+  {path: 'control', loadChildren: './control/control.module#ControlModule'},  
+  {path: 'reports', loadChildren: './reports/reports.module#ReportsModule'}
 ];
 
 @NgModule({

@@ -35,7 +35,7 @@
                 <h5>Capacidades: </h5>
                 <div class="row">
                   <div class="col-sm-3 col-md-3 col-lg-3">
-                      <h6>Tanqueta</h6>
+                    <h6>Tanqueta</h6>
                   </div>
                   <div class="col-sm-3 col-md-3 col-lg-3">
                     <h6>Capacidad</h6>
@@ -49,16 +49,24 @@
                 </div>
                 <div class="row" *ngFor="let t of tanks">
                   <div class="col-sm-3 col-md-3 col-lg-3">
-                      <span>{{t.machineId}}</span>
+                    <span [ngClass]="{'red':getCurentCapacity(t)<=15,'orange':getCurentCapacity(t)<=45,'green':getCurentCapacity(t)>45}">
+                      {{t.machineId}}
+                    </span>
                   </div>
                   <div class="col-sm-3 col-md-3 col-lg-3">
-                    <span>{{t.tankCapacity}}</span>
+                    <span [ngClass]="{'red':getCurentCapacity(t)<=15,'orange':getCurentCapacity(t)<=45,'green':getCurentCapacity(t)>45}">
+                      {{t.tankCapacity}}
+                    </span>
                   </div>
                   <div class="col-sm-3 col-md-3 col-lg-3">
-                    <span>{{t.currentCapacity}}</span>
+                    <span [ngClass]="{'red':getCurentCapacity(t)<=15,'orange':getCurentCapacity(t)<=45,'green':getCurentCapacity(t)>45}">
+                      {{t.currentCapacity}}
+                    </span>
                   </div>
                   <div class="col-sm-3 col-md-3 col-lg-3">
-                    <span>{{(t.currentCapacity/t.tankCapacity)*100 | number: '1.0-2'}}</span>
+                    <span [ngClass]="{'red':getCurentCapacity(t)<=15,'orange':getCurentCapacity(t)<=45,'green':getCurentCapacity(t)>45}">
+                      {{(getCurentCapacity(t)) | number: '1.0-2'}}%
+                    </span>
                   </div>
                 </div>
               </div>
