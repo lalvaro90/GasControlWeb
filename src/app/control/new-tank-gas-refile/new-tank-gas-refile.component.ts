@@ -1,37 +1,38 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AutomaticBuildFormsComponent } from 'src/app/forms/build-forms/build-forms.component';
 import { AlertItem } from 'src/app/helpers/AlertItem';
 import { Configuration } from 'src/app/models/Configuration';
 import { FormBuilder, FormItem, InputType } from 'src/app/models/FormItem';
 import { Machine } from 'src/app/models/Machine';
-import { MachineGasRefile } from 'src/app/models/MachineGasRefile';
 import { Project } from 'src/app/models/Project';
+import { Provider } from 'src/app/models/Provider';
+import { TankGasRefile } from 'src/app/models/TankGasRefile';
 import { User } from 'src/app/models/User';
 import { ConfigService } from 'src/app/Services/config.service';
-import { MachineGasRefileService } from 'src/app/Services/machine-gas-refile.service';
 import { MachineService } from 'src/app/Services/machine.service';
 import { ProjectsService } from 'src/app/Services/projects.service';
+import { ProviderService } from 'src/app/Services/provider.service';
+import { TankGasRefilService } from 'src/app/Services/tank-gas-refil.service';
 import { UserService } from 'src/app/Services/user.service';
 
 @Component({
-  selector: 'app-new-gas-transfer-tank',
-  templateUrl: './new-gas-transfer-tank.component.html',
-  styleUrls: ['./new-gas-transfer-tank.component.css']
+  selector: 'app-new-tank-gas-refile',
+  templateUrl: './new-tank-gas-refile.component.html',
+  styleUrls: ['./new-tank-gas-refile.component.css']
 })
-export class NewGasTransferTankComponent implements OnInit {
+export class NewTankGasRefileComponent implements OnInit {
   formItem = new FormBuilder;
   alertComponent: AlertItem;
   formItemReady = false;
-  gasTransfer: MachineGasRefile;
+  tankGasRefile: TankGasRefile;
   config: Configuration;
   loading = false;
   users: Array<User>;
   projects: Array<Project>;
-  machines: Array<Machine>;
+  providers: Array<Provider>
   tanks: Array<Machine>;
-  equipment: Array<Machine>;
   context:AutomaticBuildFormsComponent;
   isTank: Array<TankOptions> = [{ isTank: false, name: 'No' }, { isTank: true, name: 'Si' }];
 
@@ -40,11 +41,11 @@ export class NewGasTransferTankComponent implements OnInit {
     private configService: ConfigService,
     private userService: UserService,
     private projectService: ProjectsService,
-    private machineRefileService: MachineGasRefileService,
+    private tankGasRefileService: TankGasRefilService,
+    private providerService: ProviderService,
     public router: Router,
     private route: ActivatedRoute) {
     this.alertComponent = new AlertItem();
-    this.machines = new Array<Machine>();
     this.projects = new Array<Project>();
     this.users = new Array<User>();
 
@@ -62,17 +63,16 @@ export class NewGasTransferTankComponent implements OnInit {
     await this.userService.get().toPromise().then(res => { this.users = res; });
     await this.configService.get().toPromise().then(res => { this.config = res[0]; });
     await this.machineService.get().toPromise().then(res => {
-      this.machines = res;
-      this.equipment = this.machines.filter(x => x.isTank == true);
-      this.tanks = this.machines.filter(x => x.isTank == true);
+      this.tanks = res.filter(x => x.isTank == true);
     });
+    await this.providerService.get().toPromise().then(res => this.providers = res);
 
     this.route.queryParams.subscribe(async params => {
       let id = params['id'];
       if (id) {
-        await this.machineRefileService.getById(id).toPromise().then(res => {
-          this.gasTransfer = res;
-          this.setupForm(this.gasTransfer);
+        await this.tankGasRefileService.getById(id).toPromise().then(res => {
+          this.tankGasRefile = res;
+          this.setupForm(this.tankGasRefile);
         });
       } else {
         this.setupForm();
@@ -80,131 +80,102 @@ export class NewGasTransferTankComponent implements OnInit {
     });
   }
 
-  private setupForm(item: MachineGasRefile = null) {
+  private setupForm(item: TankGasRefile = null) {
     this.formItem = new FormBuilder();
     this.formItem.formItems = new Array<FormItem>();
     let it = <Array<FormItem>>[{
-      name: "Equipo al que se le dispensa",
+      name: "Proveedro",
       placeHolder: 'Equipo',
       type: InputType.select,
-      propertyName: 'refilingMaching',
-      value: item ? item.refilingMaching : '',
+      propertyName: 'provider',
+      value: item ? item.provider : '',
       isReadOnly: false,
       isRequired: true,
-      sourceText: 'description',
-      secondText: 'machineId',
+      sourceText: 'name',
       sourceValue: 'id',
-      source: this.equipment,
-      selectOnChange: this.onChangeMachine
+      source: this.providers,
       // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
     },
     {
-      name: "Cisterna o Tanqueta",
-      placeHolder: 'Cisterna o Tanqueta',
-      type: InputType.select,
-      propertyName: 'tank',
-      value: item ? item.tank : '',
+      name: "Cantidad de Litros",
+      placeHolder: 'Cantidad de Litros',
+      type: InputType.number,
+      propertyName: 'litersCount',
+      value: item ? item.litersCount : '',
       isReadOnly: true,
       isRequired: true,
-      sourceText: 'description',
-      secondText: 'machineId',
-      sourceValue: 'id',
-      source: this.tanks
-      // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
-    },
-    {
-      name: "Horimetro",
-      placeHolder: 'Horimetro actual',
-      type: InputType.number,
-      propertyName: 'hourmeter',
-      value: item ? item.hourmeter : '',
-      isReadOnly: true,
-      isRequired: true,
-      onChange: this.validateItemHour
-    },
-    {
-      name: "Kilometraje Actual",
-      placeHolder: 'Kilometraje Actual',
-      type: InputType.number,
-      propertyName: 'mileage',
-      value: item ? item.mileage : '',
-      isReadOnly: true,
-      isRequired: true,
-      customeValidator: this.validateItemOdometer
-    },
-    {
-      name: "Catidad de litros dispensados",
-      placeHolder: 'Catidad de listros dispensados',
-      type: InputType.number,
-      propertyName: 'liters',
-      value: item ? item.liters : '',
-      isRequired: true,
-      isReadOnly: false,
     },
     {
       name: "Precio Actual del Combustible",
       placeHolder: 'Precio Actual del Combustible',
       type: InputType.number,
       propertyName: 'currentPrice',
-      value: item ? item.currentPrice : '',
+      value: item ? item.fuleLiterPrice : '',
       isReadOnly: true,
       isRequired: true,
       // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
     },
     {
-      name: "Consecutivo Maria",
-      placeHolder: 'Consecutivo Maria',
+      name: "Total del la Factura",
+      placeHolder: 'Total del la Factura',
       type: InputType.number,
-      propertyName: 'tankConsecutive',
-      value: item ? item.tankConsecutive : '',
+      propertyName: 'invoiceTotal',
+      value: item ? item.invoiceTotal : '',
       isReadOnly: true,
       isRequired: true,
       // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
-    },
+    },    
     {
-      name: "Fecha",
-      placeHolder: 'Fecha',
-      type: InputType.date,
-      propertyName: 'transactionDate',
-      value: item ? item.transactionDate : '',
-      isReadOnly: true,
-      isRequired: true,
-      // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
-    },
-    {
-      name: "Quien Dispensa",
-      placeHolder: 'Quien Dispensa',
+      name: 'Responsable',
+      placeHolder: 'Responsable',
       type: InputType.select,
-      propertyName: 'dispenser',
-      value: item ? item.dispenser : false,
+      propertyName: 'responsible',
+      value: item ? item.responsible : false,
       isReadOnly: true,
       isRequired: true,
       source: this.users,
-      sourceText: 'firstName',
-      secondText: 'lastName',
+      sourceText: 'name',
       sourceValue: 'id',
       // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
     },
     {
-      name: "Quien Recibe",
-      placeHolder: 'Quien Recibe',
-      type: InputType.select,
-      propertyName: 'receiver',
-      value: item ? item.receiver : false,
+      name: "Tanqueta",
+      placeHolder: 'Tanqueta',
+      type: InputType.number,
+      propertyName: 'tank',
+      value: item ? item.tank : false,
+      source: this.tanks,
+      sourceText: 'machineId',      
+      secondText: 'brand',
+      sourceValue: 'id',
       isReadOnly: true,
       isRequired: true,
-      source: this.users,
-      sourceText: 'firstName',
-      secondText: 'lastName',
-      sourceValue: 'id',
       // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
     },
     {
-      name: "Conteo de la maria",
-      placeHolder: 'Conteo de la maria',
-      type: InputType.number,
-      propertyName: 'LitersCount',
-      value: item ? item.LitersCount : false,
+      name: "Foto de Contador de Litros",
+      placeHolder: 'Foto de Contador de Litros',
+      type: InputType.file,
+      propertyName: 'literCounterPicture',
+      value: item ? item.literCounterPicture : '',
+      isRequired: true,
+      isReadOnly: false,
+    },
+    {
+      name: "Ubicación",
+      placeHolder: 'Ubicación',
+      type: InputType.location,
+      propertyName: 'gPSTag',
+      value: item ? item.gPSTag : '',
+      isReadOnly: true,
+      isRequired: true,
+    },
+    {
+      name: "Foto de la Factura",
+      placeHolder: 'Foto de la Factura',
+      type: InputType.file,
+      propertyName: 'invoicePicture',
+      value: item ? item.invoicePicture : '',
       isReadOnly: true,
       isRequired: true,
       // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
@@ -216,32 +187,14 @@ export class NewGasTransferTankComponent implements OnInit {
       propertyName: 'id',
       value: item ? <number>item.id : '',
       isReadOnly: false
-    },
-    {
-      name: "Foto del Contador",
-      placeHolder: 'Foto del Contador',
-      type: InputType.file,
-      propertyName: 'LiterCounterPicture',
-      value: item ? item.LiterCounterPicture : false,
-      isReadOnly: true,
-      isRequired: true,
-      // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
-    },
-    {
-      name: "Firma de quien recibe",
-      placeHolder: 'Firma de quien recibe',
-      type: InputType.signature,
-      propertyName: 'receiverSignature',
-      value: item ? item.receiverSignature : '',
-      isReadOnly: true
-    },
+    },    
     ];
 
     this.loading = false;
 
     this.formItem.formItems = it;
-    this.formItem.service = this.machineRefileService;
-    this.formItem.formName = 'Transferir Combustible a Tanqueta o Sisterna';
+    this.formItem.service = this.tankGasRefileService;
+    this.formItem.formName = 'Carga Combustible a Tanqueta';
     this.formItem.hasSubmit = true;
     this.formItem.hasPrint = false;
     this.formItem.printSectionId = 'p-barcode';
@@ -251,7 +204,7 @@ export class NewGasTransferTankComponent implements OnInit {
     this.formItem.submit = this.submitNew;
     this.formItem.alertComponent = this.alertComponent;
     this.formItem.router = this.router;
-    this.formItem.returnType = new MachineGasRefile();
+    this.formItem.returnType = new TankGasRefile();
 
     this.formItem.hasCancel = true;
     this.formItem.cancelText = "Cancelar";
@@ -280,7 +233,7 @@ export class NewGasTransferTankComponent implements OnInit {
   }
 
 
-  submitNew(result: MachineGasRefile, service: MachineGasRefileService) {
+  submitNew(result: TankGasRefile, service: TankGasRefilService) {
     this.loading = true;
     debugger;
     result.id = Number(result.id);
@@ -307,7 +260,7 @@ export class NewGasTransferTankComponent implements OnInit {
 
   validateItemHour(control: FormItem) {
 
-    let machineid = this.context.formGroup.controls['refilingMaching']?.value;
+    let machineid = this.context.formGroup.controls['refilingMaching'].value;
     let machine = this.context.form.formItems.find(x => x.propertyName == 'refilingMaching').source.find(x => x.id == machineid);
 
     var diff = <number>this.context.formGroup.controls[control.propertyName].value - machine.currentHorimeter;
@@ -322,11 +275,11 @@ export class NewGasTransferTankComponent implements OnInit {
 
   validateItemOdometer(control: FormItem) {
 
-    let machineid = this?.context.formGroup.controls['refilingMaching']?.value;
-    let machine = this?.context.form.formItems.find(x => x.propertyName == 'refilingMaching').source.find(x => x.id == machineid);
+    let machineid = this.context.formGroup.controls['refilingMaching'].value;
+    let machine = this.context.form.formItems.find(x => x.propertyName == 'refilingMaching').source.find(x => x.id == machineid);
 
-    var diff = <number>this?.context.formGroup.controls[control.propertyName].value - machine?.currentOdometer;
-    if (diff > this?.context.config.hourKmValueMargin) {
+    var diff = <number>this.context.formGroup.controls[control.propertyName].value - machine.currentOdometer;
+    if (diff > this.context.config.hourKmValueMargin) {
       this.context.alertComponent.type = 'warning';
       this.context.alertComponent.title = 'Advertencia'
       this.context.alertComponent.text = `El incremento en el kilometraje es mayor al permitido por el sistema`;

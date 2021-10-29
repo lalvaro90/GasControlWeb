@@ -29,6 +29,7 @@ export class MachineNewComponent implements OnInit {
   users:Array<User>;
   projects:Array<Project>;
   isTank:Array<TankOptions> = [{isTank:false, name:'No'}, {isTank:true, name:'Si'}];
+  useHorimeter:Array<HorimeterOptions> = [{useHorimeter:false, name:'No'}, {useHorimeter:true, name:'Si'}];
 
   constructor(
     private machineService: MachineService,
@@ -110,6 +111,27 @@ export class MachineNewComponent implements OnInit {
         // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
       },
       {
+        name: "Horimetro actual",
+        placeHolder: 'Horimetro actual',
+        type: InputType.number,
+        propertyName: 'currentHorimeter',
+        value: item ? item.currentHorimeter : '',
+        isReadOnly: false,
+        isRequired:true,
+        // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
+      },
+      {
+        name: "Kilometraje actual",
+        placeHolder: 'Kilometraje actual',
+        type: InputType.number,
+        propertyName: 'currentOdometer',
+        value: item ? item.currentOdometer : '',
+        isReadOnly: false,
+        isRequired:true,
+        // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
+      },
+
+      {
         name: "Descripción",
         placeHolder: 'Descripción',
         type: InputType.text,
@@ -174,9 +196,9 @@ export class MachineNewComponent implements OnInit {
         value: item ? item.useHorimeter : false,
         isReadOnly: false,
         isRequired:true,
-        source: this.isTank,
+        source: this.useHorimeter,
         sourceText: 'name',
-        sourceValue: 'isTank',
+        sourceValue: 'useHorimeter',
         sourceValueIsObjet:true,
         // textMask:  [/\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]
       },
@@ -216,7 +238,7 @@ export class MachineNewComponent implements OnInit {
 
   submitNew(result: Machine, service: MachineService) {
     this.loading = true;
-    debugger;
+     debugger;
     result.id = Number(result.id);
     if (result.id) {
       result.isTank = result.isTank;
@@ -266,3 +288,10 @@ export class TankOptions{
   isTank:boolean;
   name:string;
 }
+
+export class HorimeterOptions{
+  useHorimeter:boolean;
+  name:string;
+}
+
+

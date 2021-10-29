@@ -1,0 +1,78 @@
+<mat-card>
+    <mat-card-title>
+        <div class="row">
+            <div class="col-sm-1 col-md-1 col-lg-1">
+                Reporte
+            </div>
+            <div class="col-sm-2 col-md-2 col-lg-2">
+                
+            </div>
+            <div class="col-sm-1 col-md-1 col-lg-1" *ngIf="reportModel.hasFilter">
+                Filtro
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-6" *ngIf="reportModel.hasFilter">                
+                <select (change)="reportModel.onFilterChange(reportModel, $event)">
+                    <option selected value="0">Seleccione una opción</option>
+                    <option *ngFor="let op of reportModel.filterSource" value="{{op[reportModel.sourceValue]}}">{{op[reportModel.sourceText]}}</option>
+                </select>
+            </div>
+        </div>
+    </mat-card-title>
+    <mat-card-content>
+        <div class="row">
+            <div class="col-sm-1 col-md-1 col-lg-1"></div>
+            <div class="col-sm-8 col-md-8 col-lg-8"></div>
+            <div class="col-sm-1 col-md-1 col-lg-1">
+                <button mat-raised-button color="primary" *ngIf="reportModel.hasPrint" 
+                [styleSheetFile]="styleUrlRef" [printSectionId]="printId" ngxPrint>Imprimir</button>
+            </div>
+            <div class="col-sm-1 col-md-1 col-lg-1">
+                <button mat-raised-button color="basic" *ngIf="reportModel.hasSave">Guardar</button>
+            </div>
+            <div class="col-sm-1 col-md-1 col-lg-1"></div>
+        </div>
+        <div id="printDiv" class="row">
+            <div class="col-sm-1 col-md-1 col-lg-1"></div>
+            <div class="col-sm-10 col-md-10 col-lg-10">
+                <div class="row">
+                    <div class="col-sm-9 col-md-9 col-lg-9">
+                        <h3>
+                            {{reportModel.reportName}}
+                        </h3>
+                    </div>
+                    <div class="col-sm-2 col-md-2 col-lg-2">
+                        <h3>
+                            <img src="{{config.companyLogo}}" height="50">
+                        </h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <table matSort (matSortChange)="sortData($event)">
+                            <thead>
+                                <th *ngFor="let header of reportModel.colums" mat-sort-header="{{header.property}}">{{header.name}}
+                                </th>
+                            </thead>    
+                            <tr *ngFor="let it of reportModel.source">
+                                <td *ngFor="let col of reportModel.colums" style="padding-right: 8px;">
+                                    <span *ngIf="col.isObject && !col.isDate">
+                                        {{it[col.property][col.subProperty]}}
+                                    </span>
+                                    <span *ngIf="!col.isObject && !col.isDate">
+                                       {{it[col.property]}}
+                                    </span>
+                                    <span *ngIf="!col.isObject && col.isDate">
+                                       {{it[col.property] | date}}
+                                    </span>
+                                    <span *ngIf="col.isObject && col.isDate">
+                                        {{it[col.property][col.subProperty] | date}}
+                                    </span>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1 col-md-1 col-lg-1"></div>
+        </div>
+    </mat-card-content>
+</mat-card>

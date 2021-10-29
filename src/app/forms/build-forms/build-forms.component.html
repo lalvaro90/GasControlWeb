@@ -21,9 +21,9 @@
             {{item.name}}
           </mat-label>
           <input *ngIf="item.textMask" matInput type="{{item.type}}" [textMask]="{mask: item.textMask}"
-            placeholder="{{item.placeHolder}}" formControlName="{{item.propertyName}}" [readonly]="item.isReadOnly" />
+            placeholder="{{item.placeHolder}}" formControlName="{{item.propertyName}}" [readonly]="item.isReadOnly" (change)="inputOnChange(item)" />
           <input *ngIf="!item.textMask" matInput type="{{item.type}}" placeholder="{{item.placeHolder}}"
-            formControlName="{{item.propertyName}}" [readonly]="item.isReadOnly" />
+            formControlName="{{item.propertyName}}" [readonly]="item.isReadOnly" (change)="inputOnChange(item)"/>
           <span matPrefix *ngIf="item.prefix">{{item.prefix}}</span>
           <span matSuffix *ngIf="item.suffix">{{item.suffix}}</span>
         </mat-form-field>

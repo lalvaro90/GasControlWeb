@@ -30,10 +30,10 @@ export class LoginComponent implements OnInit {
       rememberme: new FormControl('')
     });
     this.config = new Configuration();
-    this.configService.get().subscribe(res => {
-      if(res[0])
-        this.config = res[0];
-    })
+    this.configService.getConfiguration().subscribe(res => {
+      this.config = res;
+      // ConfigService.configuration = res;
+    });
   }
 
   ngOnInit() {

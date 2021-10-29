@@ -11,3 +11,10 @@ mat-icon{
 .green{
     color: green;
 }
+
+.overFlow{
+    max-height: 100px;
+    min-height: 100px;
+    overflow: scroll;
+    overflow-x: hidden;
+}

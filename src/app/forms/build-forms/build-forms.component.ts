@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormItem, FormBuilder, InputType } from 'src/app/models/FormItem';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertItem } from 'src/app/helpers/AlertItem';
 import { BehaviorSubject } from 'rxjs';
@@ -8,6 +8,8 @@ import { isNgTemplate } from '@angular/compiler';
 import * as JsBarcode from 'jsbarcode';
 import { GoogleMap, MapMarker } from '@angular/google-maps';
 import { SignaturePad } from 'angular2-signaturepad';
+import { Configuration } from 'src/app/models/Configuration';
+import { ConfigService } from 'src/app/Services/config.service';
 
 @Component({
   selector: 'app-build-forms',
@@ -33,6 +35,7 @@ export class AutomaticBuildFormsComponent implements OnInit {
   barcodes: { [id: string]: string; } = {};
   nextBarcode = new BehaviorSubject<boolean>(false);
   loading: boolean;
+  config: Configuration;
 
   center = { lat:9.936268,lng:-84.1308679 };
   zoom = 17;
@@ -46,7 +49,7 @@ export class AutomaticBuildFormsComponent implements OnInit {
 
   @Input() form: FormBuilder;
   formGroup: FormGroup;
-  constructor(public router: Router) {
+  constructor(public router: Router, configService:ConfigService) {
     this.alertComponent = new AlertItem();
     this.nextBarcode.subscribe(res => {
       if (res) {
@@ -55,6 +58,7 @@ export class AutomaticBuildFormsComponent implements OnInit {
         });
       }
     });
+    configService.getConfiguration().subscribe(res => this.config = res);
   }
 
   ngAfterViewInit() {
@@ -100,15 +104,22 @@ export class AutomaticBuildFormsComponent implements OnInit {
     item.selectOnChange();
   }
 
+  inputOnChange(item:FormItem){
+    item.onChange(item);
+  }
+
   private initializeFormGroup() {
     let config = {};
     this.form.formItems.forEach(it => {
+      const validators = new Array<ValidatorFn>();
+      if(it.isRequired) validators.push(Validators.required);
+      if(it.customeValidator) validators.push(it.customeValidator);
+
       if(it.type == InputType.date){
         let date = new Date();
-        console.log('Date',date);
-        config[it.propertyName] = new FormControl(`${date.getUTCDay()}/${date.getUTCMonth()}/${date.getUTCFullYear()}`,it.isReadOnly? Validators.required : undefined)
+        config[it.propertyName] = new FormControl(`${date.getUTCDay()}/${date.getUTCMonth()}/${date.getUTCFullYear()}`, validators);
       }else{
-        config[it.propertyName] = new FormControl('', it.isRequired ? Validators.required : undefined);
+        config[it.propertyName] = new FormControl('', validators);
       }
       it.context = this;
     });
@@ -123,7 +134,8 @@ export class AutomaticBuildFormsComponent implements OnInit {
         this.marker = new google.maps.Marker({map:this.map?.googleMap, position: JSON.parse(item.value)})
       }
       else if(item.type == InputType.date){
-        this.formGroup.controls[item.propertyName].setValue(new Date(item.value).toISOString().slice(0, -1))
+        const date = new Date(item.value);
+        this.formGroup.controls[item.propertyName].setValue(date?.toISOString().slice(0, -1))
       }
       else {
         this.formGroup.controls[item.propertyName].setValue(item.value);

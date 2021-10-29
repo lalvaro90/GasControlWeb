@@ -17,6 +17,10 @@
       {
         "name":"Eliminar",
         "value":"project_delete"
+      },
+      {
+        "name":"Test",
+        "value":"test_permission"
       }
     ]
   },
@@ -93,6 +97,27 @@
       {
         "name":"Ver",
         "value":"config_view"
+      }
+    ]
+  },
+  {
+    "name":"Transferencias",
+    "permissions":[
+      {
+        "name": "Compra de Combustible",
+        "value": "purchaseTank_new"
+      },
+      {
+        "name":"Transferir a Maquina",
+        "value":"transfer_new"
+      },
+      {
+        "name":"Transferir a Tanqueta",
+        "value":"transferTank_new"
+      },
+      {
+        "name":"Tablero Principal",
+        "value":"transfer_dashboard"
       }
     ]
   },

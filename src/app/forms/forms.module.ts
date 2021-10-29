@@ -8,13 +8,15 @@ import { BuildListsComponent } from './build-lists/build-lists.component';
 import { TextMaskModule } from 'angular2-text-mask';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { SignaturePadModule } from 'angular2-signaturepad';
+import { ReportBuilderComponent } from './report-builder/report-builder.component';
 
 
 
 @NgModule({
   declarations: [
     AutomaticBuildFormsComponent,
-    BuildListsComponent
+    BuildListsComponent,
+    ReportBuilderComponent
   ],
   imports: [
     CommonModule,
@@ -28,7 +30,8 @@ import { SignaturePadModule } from 'angular2-signaturepad';
   ],
   exports:[
     AutomaticBuildFormsComponent,
-    BuildListsComponent
+    BuildListsComponent,
+    ReportBuilderComponent
   ]
 })
 export class AutomaticFormsModule { }

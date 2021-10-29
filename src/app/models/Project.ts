@@ -14,3 +14,9 @@ export class Project
         status: ItemStatus;
 
     }
+
+export class ProjectConsumtionDto{
+    id:number;
+    name:string;
+    consumption: number;
+}

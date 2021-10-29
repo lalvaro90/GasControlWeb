@@ -32,7 +32,6 @@ export class ProviderNewComponent implements OnInit {
 
   ngOnInit() {
     this.loading = true;
-
     this.configService.get().subscribe(res => {
       this.config = res[0];
       this.loading = false;

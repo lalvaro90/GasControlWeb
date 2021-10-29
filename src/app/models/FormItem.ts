@@ -1,6 +1,7 @@
 import { AlertItem } from '../helpers/AlertItem';
 import { Router } from '@angular/router';
 import { Type } from '@angular/core';
+import { ValidatorFn } from '@angular/forms';
 
 export class FormBuilder{
   formName:string;
@@ -49,6 +50,7 @@ export class FormItem {
   textMask: any; 
   selectOnChange:any;
   onChange:any;
+  customeValidator:any;
 }
 
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AutomaticBuildFormsComponent } from 'src/app/forms/build-forms/build-forms.component';
 import { AlertItem } from 'src/app/helpers/AlertItem';
@@ -32,7 +32,7 @@ export class NewGasTransferComponent implements OnInit {
   machines: Array<Machine>;
   tanks: Array<Machine>;
   equipment: Array<Machine>;
-  context:AutomaticBuildFormsComponent;
+  context: AutomaticBuildFormsComponent;
   isTank: Array<TankOptions> = [{ isTank: false, name: 'No' }, { isTank: true, name: 'Si' }];
 
   constructor(
@@ -60,7 +60,7 @@ export class NewGasTransferComponent implements OnInit {
       this.projects = res;
     });
     await this.userService.get().toPromise().then(res => { this.users = res; });
-    await this.configService.get().toPromise().then(res => { this.config = res[0]; });
+    await this.configService.getConfiguration().toPromise().then(res => { this.config = res; });
     await this.machineService.get().toPromise().then(res => {
       this.machines = res;
       this.equipment = this.machines.filter(x => x.isTank == false);
@@ -120,6 +120,7 @@ export class NewGasTransferComponent implements OnInit {
       value: item ? item.hourmeter : '',
       isReadOnly: true,
       isRequired: true,
+      onChange: this.validateItemHour
     },
     {
       name: "Kilometraje Actual",
@@ -129,6 +130,7 @@ export class NewGasTransferComponent implements OnInit {
       value: item ? item.mileage : '',
       isReadOnly: true,
       isRequired: true,
+      customeValidator: this.validateItemOdometer
     },
     {
       name: "Catidad de litros dispensados",
@@ -258,19 +260,49 @@ export class NewGasTransferComponent implements OnInit {
     this.formItemReady = true;
   }
 
-  onChangeMachine(){
+  validateItemHour(control: FormItem) {
 
-    this.context.form.formItems.forEach(x=> {
+    let machineid = this.context.formGroup.controls['refilingMaching'].value;
+    let machine = this.context.form.formItems.find(x => x.propertyName == 'refilingMaching').source.find(x => x.id == machineid);
+
+    var diff = <number>this.context.formGroup.controls[control.propertyName].value - machine.currentHorimeter;
+    if (diff > this.context.config.hourKmValueMargin) {
+      this.context.alertComponent.type = 'warning';
+      this.context.alertComponent.title = 'Advertencia'
+      this.context.alertComponent.text = `El incremento en el horimetro es mayor al permitido por el sistema`;
+      this.context.alertComponent.Show();
+    }
+
+  }
+
+  validateItemOdometer(control: FormItem) {
+
+    let machineid = this.context.formGroup.controls['refilingMaching'].value;
+    let machine = this.context.form.formItems.find(x => x.propertyName == 'refilingMaching').source.find(x => x.id == machineid);
+
+    var diff = <number>this.context.formGroup.controls[control.propertyName].value - machine.currentOdometer;
+    if (diff > this.context.config.hourKmValueMargin) {
+      this.context.alertComponent.type = 'warning';
+      this.context.alertComponent.title = 'Advertencia'
+      this.context.alertComponent.text = `El incremento en el kilometraje es mayor al permitido por el sistema`;
+      this.context.alertComponent.Show();
+    }
+  }
+
+
+  onChangeMachine() {
+
+    this.context.form.formItems.forEach(x => {
       x.isReadOnly = false;
     })
 
     let machineid = this.context.formGroup.controls['refilingMaching'].value;
-    let machine = this.context.form.formItems.find(x=> x.propertyName == 'refilingMaching').source.find(x=> x.id == machineid);
-    if(machine.useHorimeter){
+    let machine = this.context.form.formItems.find(x => x.propertyName == 'refilingMaching').source.find(x => x.id == machineid);
+    if (machine.useHorimeter) {
       this.context.formGroup.controls['hourmeter'].disable();
-    }else{
+    } else {
       this.context.formGroup.controls['mileage'].disable();
-    }    
+    }
   }
 
 

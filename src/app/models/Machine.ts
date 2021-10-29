@@ -23,8 +23,20 @@ export class Machine
         images: ItemImage[];
         isTank: boolean;
         useHorimeter: boolean;
+        currentHorimeter: number;
+        currentOdometer: number;
 
         //Admin Properties
         status: ItemStatus;
         lastUpdated: Date | string;
+    }
+
+    export class MachineConsumptionDto{
+        machineId:string;
+        brand: string;
+        average: number;
+        isTank: boolean;
+        usesHorimeter: boolean
+        currentCapacity: number;
+        tankCapacity: number;
     }

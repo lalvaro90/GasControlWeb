@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Project } from '../models/Project';
+import { Observable } from 'rxjs';
+import { Project, ProjectConsumtionDto } from '../models/Project';
 import { AppService } from './app-service';
 
 @Injectable({
@@ -12,4 +13,8 @@ export class ProjectsService extends AppService<Project> {
   {
     super(client,'projects');
    }
+
+   getConsumption(): Observable<Array<ProjectConsumtionDto>>{
+    return this.client.get<Array<ProjectConsumtionDto>>(`${this.apiUrl}/cunsumption`);
+  }
 }

@@ -11,5 +11,8 @@ export class Configuration
     cEOName: string;
     supervisor: string;
     status: ItemStatus;
-
+    hourKmValueMargin:number;
+    tankWarningLevel:number;
+    tankCritialLevel:number;
+    tankOkLevel:number;
 }

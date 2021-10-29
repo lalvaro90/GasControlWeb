@@ -1,23 +1,57 @@
-body{
+body {
   padding-left: 95px;
 }
 
 
 table {
-  border: 1px solid black;
-  width: 90%;
+  border        : 1px solid black;
+  width         : 90%;
   border-spacing: 0px;
-  margin-left: 10px;
-  margin-top: 10px;
-  font-size: 10px
+  margin-left   : 10px;
+  margin-top    : 10px;
+  font-size     : 10px
 }
 
 table td {
   border: 1px solid black;
 }
 
+.col-sm-9,
+.col-md-9,
+.col-lg-9,
+.col-sm-2,
+.col-md-2,
+.col-lg-2 {
+  float        : left;
+  position     : relative;
+  width        : 100%;
+  padding-right: 15px;
+  padding-left : 15px;
+}
+
+.col-sm-2,
+.col-md-2,
+.col-lg-2 {
+  flex     : 0 0 16.666667%;
+  max-width: 16.666667%;
+}
+
+.col-sm-9,
+.col-md-9,
+.col-lg-9 {
+  flex     : 0 0 75%;
+  max-width: 75%;
+}
+
+table thead th button {
+  background-color: black;
+  color           : white;
+  border          : none;
+  font-weight     : bold;
+}
+
 table thead {
-  color: white;
+  color     : white;
   background: black;
 }
 
@@ -25,11 +59,15 @@ table tbody {
   font-size: 10px;
 }
 
-table tbody td{
+table tbody td {
   max-width: 150px;
 }
 
-.assetid, .desc, .brand, .model, .series{
+.assetid,
+.desc,
+.brand,
+.model,
+.series {
   width: 15px;
 }
 
@@ -37,40 +75,43 @@ table tbody td{
   max-width: 250px;
 }
 
-.col-sm-6, .col-md-6, .col-lg-6{
-  margin-right: 10px;
-  float: left;
+.col-sm-6,
+.col-md-6,
+.col-lg-6 {
+  margin-right : 10px;
+  float        : left;
   margin-bottom: 10px;
 }
 
-.fo{
+.fo {
   margin-top: 20px;
 }
 
-.headerItem{
+.headerItem {
   width: 50%;
   float: left;
 }
 
-.clear{
+.clear {
   clear: both;
 }
 
 .reportPage {
   margin-bottom: 10px;
-  padding-top: 170px;
-  height: 14.2cm;
+  padding-top  : 170px;
+  height       : 14.2cm;
 }
 
 
-.headerTable{
+.headerTable {
   width: 90%;
 }
-.headerTable tr{
+
+.headerTable tr {
   border: 0px;
 }
 
-.headerTable td{
+.headerTable td {
   border: 0px;
 }
 
@@ -86,5 +127,3 @@ table tbody td{
     */
   }
 }
-
-

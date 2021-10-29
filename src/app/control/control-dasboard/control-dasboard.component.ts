@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ListModel } from 'src/app/forms/List-Item-Model';
-import { Machine } from 'src/app/models/Machine';
+import { Machine, MachineConsumptionDto } from 'src/app/models/Machine';
 import { MachineGasRefile } from 'src/app/models/MachineGasRefile';
-import { Project } from 'src/app/models/Project';
+import { Project, ProjectConsumtionDto } from 'src/app/models/Project';
 import { User } from 'src/app/models/User';
 import { MachineGasRefileService } from 'src/app/Services/machine-gas-refile.service';
 import { MachineService } from 'src/app/Services/machine.service';
@@ -18,9 +18,9 @@ export class ControlDasboardComponent implements OnInit {
 
   refiles: Array<MachineGasRefile>;
   listMode: ListModel;
-  tanks: Array<Machine>;
-  machines: Array<Machine>;
-  projects: Array<Project>;
+  tanks: Array<MachineConsumptionDto>;
+  machines: Array<MachineConsumptionDto>;
+  projects: Array<ProjectConsumtionDto>;
   user: User;
   loading = false;
   showList = false;
@@ -33,9 +33,9 @@ export class ControlDasboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.listMode = new ListModel();
-    this.tanks = new Array<Machine>();
-    this.machines = new Array<Machine>();
-    this.projects = new Array<Project>();
+    this.tanks = new Array<MachineConsumptionDto>();
+    this.machines = new Array<MachineConsumptionDto>();
+    this.projects = new Array<ProjectConsumtionDto>();
     this.userService.loggedUser.subscribe(res => {
       this.user = res;
     });
@@ -44,7 +44,7 @@ export class ControlDasboardComponent implements OnInit {
     this.getTodayData();
   }
 
-  getCurentCapacity(m:Machine):number{
+  getCurentCapacity(m:MachineConsumptionDto):number{
     let cap = 0;
     try{
 
@@ -61,12 +61,12 @@ export class ControlDasboardComponent implements OnInit {
       this.initListData();
       this.showList = true;
     });
-    await this.machineService.get().toPromise().then(res => {
+    await this.machineService.getAverageConsumption().toPromise().then(res => {
       this.machines = res.filter(x => x.isTank == false);
       this.tanks = res.filter(x => x.isTank == true);
       this.showCapacities = true;
     });
-    await this.projectService.get().toPromise().then(res => {
+    await this.projectService.getConsumption().toPromise().then(res => {
       this.projects = res;
     })
   }

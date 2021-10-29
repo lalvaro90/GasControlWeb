@@ -1,6 +1,6 @@
 <div class="row top-header">
   <div class="col-sm-1 col-md-1 col-lg-1">
-    <button mat-icon-button [matMenuTriggerFor]="main" *ngIf="logged">
+    <button mat-icon-button [matMenuTriggerFor]="main" *ngIf="logged | async">
       <mat-icon>more_vert</mat-icon> Menú
     </button>
     <mat-menu #main="matMenu">
@@ -16,6 +16,10 @@
         <mat-icon>send</mat-icon>
         <span>Cargar Tanqueta</span>
       </button>
+      <button mat-menu-item [routerLink]="['/control/new-refill-tank']" matTooltip="Compra de Combustible">
+        <mat-icon>local_gas_station</mat-icon>
+        <span>Compra de Combustible</span>
+      </button>
       <button mat-menu-item [matMenuTriggerFor]="reports">
         <mat-icon>text_snippet</mat-icon>
         <span>Reportes</span>
@@ -30,7 +34,7 @@
         <mat-icon>label</mat-icon>
         <span>Transferencias del día</span>
       </button>
-      <button mat-menu-item [routerLink]="['/report-by-location']">
+      <button mat-menu-item [routerLink]="['/reports/project-transfers']">
         <mat-icon>label</mat-icon>
         <span>Transferencias por proyecto</span>
       </button>
@@ -45,7 +49,7 @@
     </mat-menu>
   </div>
   <div class="col-sm-9 col-md-9 col-lg-9">
-    <p style="padding-top: 7px;"  *ngIf="logged">
+    <p style="padding-top: 7px;"  *ngIf="user.firstName">
       <strong>
         Bienvenido: {{user.firstName}} {{user.lastName}}
       </strong>
@@ -90,15 +94,9 @@
   </div>
 </div>
 <div class="row fullH">
-  <div class="col-sm-1 col-md-1 col-lg-1">
-
-  </div>
-  <div class="col-sm-10 col-md-10 col-lg-10">
+  <div class="col-sm-11 col-md-11 col-lg-11 margin-border">
     <div class="mainContainer">
       <router-outlet></router-outlet>
     </div>
-  </div>
-  <div class="col-sm-1 col-md-1 col-lg-1">
-
   </div>
 </div>
