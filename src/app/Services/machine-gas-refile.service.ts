@@ -15,6 +15,7 @@ export class MachineGasRefileService extends AppService<MachineGasRefile> {
    }
    
   getTodayData(): Observable<Array<MachineGasRefile>>{
+    debugger;
     return this.client.get<Array<MachineGasRefile>>(`${this.apiUrl}/today`);
   }
 }

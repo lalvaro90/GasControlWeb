@@ -235,7 +235,6 @@ export class NewTankGasRefileComponent implements OnInit {
 
   submitNew(result: TankGasRefile, service: TankGasRefilService) {
     this.loading = true;
-    debugger;
     result.id = Number(result.id);
     if (result.id) {
       service.edit(result, result.id).subscribe(res => {

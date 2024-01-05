@@ -238,7 +238,6 @@ export class MachineNewComponent implements OnInit {
 
   submitNew(result: Machine, service: MachineService) {
     this.loading = true;
-     debugger;
     result.id = Number(result.id);
     if (result.id) {
       result.isTank = result.isTank;

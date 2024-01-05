@@ -1,15 +1,13 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormItem, FormBuilder, InputType } from 'src/app/models/FormItem';
 import { FormGroup, FormControl, Validators, ValidatorFn } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertItem } from 'src/app/helpers/AlertItem';
-import { BehaviorSubject } from 'rxjs';
-import { isNgTemplate } from '@angular/compiler';
+import { BehaviorSubject, Subject } from 'rxjs';
 import * as JsBarcode from 'jsbarcode';
 import { GoogleMap, MapMarker } from '@angular/google-maps';
-import { SignaturePad } from 'angular2-signaturepad';
+import { NgSignaturePadOptions, SignaturePadComponent } from '@almothafar/angular-signature-pad';
 import { Configuration } from 'src/app/models/Configuration';
-import { ConfigService } from 'src/app/Services/config.service';
 
 @Component({
   selector: 'app-build-forms',
@@ -18,38 +16,50 @@ import { ConfigService } from 'src/app/Services/config.service';
 })
 
 export class AutomaticBuildFormsComponent implements OnInit {
-  map: GoogleMap;
+  map: any = {};
+  // localData:any;
+  private stop$ = new Subject();
+  public config:Configuration;
   @ViewChild(GoogleMap)
-  set Map(mp:GoogleMap){
+  set Map(mp: GoogleMap) {
     this.map = mp;
-  } 
-  
-  @ViewChild(SignaturePad) signaturePad: SignaturePad;
-  
-  marker:google.maps.Marker;
+  }
+
+  @ViewChild(SignaturePadComponent)
+  public signaturePad!: SignaturePadComponent;
+
+  fileReader!: any;
+  currentProperty!: string;
+  audio!: HTMLAudioElement;
+  audioProgress: string = '0';
+  currentTime: string = '0';
+  audioUrl:string = '';
+
+  marker: MarkerProperties [] = [];
   alertComponent: AlertItem;
-  imageError: string;
-  isImageSaved: boolean;
-  cardImageBase64: string;
-  files: { [id: string]: string; } = {};
+  imageError!: string;
+  isImageSaved!: boolean;
+  cardImageBase64!: string;
+  files: { [id: string]: any; } = {};
   barcodes: { [id: string]: string; } = {};
   nextBarcode = new BehaviorSubject<boolean>(false);
-  loading: boolean;
-  config: Configuration;
+  loading!: boolean;
+  itemId:number = 0;
 
-  center = { lat:9.936268,lng:-84.1308679 };
+  center = { lat: 9.936268, lng: -84.1308679 };
   zoom = 17;
-  display?: google.maps.LatLngLiteral;
 
-  private signaturePadOptions: Object = { // passed through to szimek/signature_pad constructor
+  public signaturePadOptions: NgSignaturePadOptions  = { // passed through to szimek/signature_pad constructor
     'minWidth': 5,
     'canvasWidth': 480,
     'canvasHeight': 300
   };
 
-  @Input() form: FormBuilder;
-  formGroup: FormGroup;
-  constructor(public router: Router, configService:ConfigService) {
+  @Input()
+  form!: FormBuilder;
+  formGroup!: FormGroup;
+  constructor(public router: Router,
+    public route: ActivatedRoute) {
     this.alertComponent = new AlertItem();
     this.nextBarcode.subscribe(res => {
       if (res) {
@@ -58,15 +68,17 @@ export class AutomaticBuildFormsComponent implements OnInit {
         });
       }
     });
-    configService.getConfiguration().subscribe(res => this.config = res);
   }
 
   ngAfterViewInit() {
-    console.log(this.map);
     if (this.map) {
       this.getCurrentLocation();
-      this.form.context = this;
     }
+    this.form.context = this;
+  }
+
+  clickMap(event: any) {
+    this.marker.push({ position: { lat: event.latLng.lat(), lng: event.latLng.lng()}} );
   }
 
   getCurrentLocation() {
@@ -77,48 +89,39 @@ export class AutomaticBuildFormsComponent implements OnInit {
           lng: position.coords.longitude,
         }
         this.map.googleMap.setCenter(pos);
-        if(this.marker){
-          this.marker.setMap(this.map.googleMap);
-          this.marker.setPosition(this.marker.getPosition());
-          this.map.googleMap.setCenter(this.marker.getPosition());
-        }
-
-        this.map.mapClick.subscribe((res)=> {
-          console.log('click',res);
-          if(this.marker){
-            this.marker.setPosition(res.latLng);
-          }
-          else
-            this.marker = new google.maps.Marker({ position: res.latLng, map: this.map.googleMap});
-        })
+        if (this.marker.length>0) {
+          this.map.googleMap.setCenter(this.marker[0].position)
+        }        
       })
     }
   }
 
   ngOnInit(): void {
+    // this.audioUrl = `${environment.artistApi}Track/streamAudio/`
     this.initializeFormGroup();
   }
 
-  selectOnChange(item:FormItem){
-    console.log('Item',item);
-    item.selectOnChange();
+  selectOnChange(item: FormItem) {
+    if (item.selectOnChange)
+      item.selectOnChange();
   }
 
-  inputOnChange(item:FormItem){
-    item.onChange(item);
+  inputOnChange(item: FormItem) {
+    if (item.onChange)
+      item.onChange(item);
   }
 
   private initializeFormGroup() {
-    let config = {};
+    let config: any = {};
     this.form.formItems.forEach(it => {
       const validators = new Array<ValidatorFn>();
-      if(it.isRequired) validators.push(Validators.required);
-      if(it.customeValidator) validators.push(it.customeValidator);
+      if (it.isRequired) validators.push(Validators.required);
+      if (it.customeValidator) validators.push(it.customeValidator);
 
-      if(it.type == InputType.date){
+      if (it.type == InputType.date) {
         let date = new Date();
         config[it.propertyName] = new FormControl(`${date.getUTCDay()}/${date.getUTCMonth()}/${date.getUTCFullYear()}`, validators);
-      }else{
+      } else {
         config[it.propertyName] = new FormControl('', validators);
       }
       it.context = this;
@@ -130,12 +133,19 @@ export class AutomaticBuildFormsComponent implements OnInit {
       } else if (item.type == InputType.barcode) {
         this.barcodes[item.propertyName] = item.value
       }
-      else if(item.type == InputType.location){
-        this.marker = new google.maps.Marker({map:this.map?.googleMap, position: JSON.parse(item.value)})
+      else if (item.type == InputType.location) {
+        if(item.value.length > 1)
+          this.marker.push({position: JSON.parse(item.value)});
       }
-      else if(item.type == InputType.date){
+      else if (item.type == InputType.date) {
         const date = new Date(item.value);
         this.formGroup.controls[item.propertyName].setValue(date?.toISOString().slice(0, -1))
+      }
+      else if (item.type == InputType.audio) {
+        this.itemId = this.form.formItems.find(x => x.propertyName == 'id')?.value;
+        // this.audio = new Audio(`${this.audioUrl}${this.itemId}/${this.localData.token.value}`);
+        this.files[item.propertyName] = `${this.audioUrl}${this.itemId}`;
+        this.InitAudioPlayer(undefined);
       }
       else {
         this.formGroup.controls[item.propertyName].setValue(item.value);
@@ -144,20 +154,22 @@ export class AutomaticBuildFormsComponent implements OnInit {
   }
 
   ngAfterViewChecked() {
-    this.nextBarcode.next(true);
+    if(this.nextBarcode)
+      this.nextBarcode.next(true);
   }
 
   register() {
+    this.loading = true;
     if (this.form.hasSubmit && this.form.submitText) {
-      let output = this.form.returnType;
+      let output: any = this.form.returnType;
       this.form.formItems.forEach(it => {
-        if (it.type == InputType.file) {
+        if (it.type == InputType.file || it.type == InputType.audio) {
           output[it.propertyName] = this.files[it.propertyName];
         }
         else if (it.type == InputType.select) {
-          if(it.sourceValueIsObjet){
+          if (it.sourceValueIsObjet) {
             output[it.propertyName] = it.source.find(x => x[it.sourceValue] == this.formGroup.controls[it.propertyName].value)[it.propertyName];
-          }else{
+          } else {
             output[it.propertyName] = it.source.find(x => x[it.sourceValue] == this.formGroup.controls[it.propertyName].value);
           }
         }
@@ -168,14 +180,14 @@ export class AutomaticBuildFormsComponent implements OnInit {
         else if (it.type == InputType.barcode) {
           output[it.propertyName] = this.barcodes[it.propertyName];
         }
-        else if(it.type == InputType.location){
-          output[it.propertyName] = JSON.stringify(this.marker.getPosition());
+        else if (it.type == InputType.location) {
+          output[it.propertyName] = JSON.stringify(this.marker[0].position);
         }
-        else if(it.type == InputType.hidden){
-          if(it.propertyName == 'id'){
+        else if (it.type == InputType.hidden) {
+          if (it.propertyName == 'id') {
             output[it.propertyName] = <number>this.formGroup.controls[it.propertyName].value;
           }
-          else{
+          else {
             output[it.propertyName] = this.formGroup.controls[it.propertyName].value;
           }
         }
@@ -186,6 +198,8 @@ export class AutomaticBuildFormsComponent implements OnInit {
 
       if (this.formGroup.valid) {
         this.form.submit(output, this.form.service);
+        if (this.audio)
+          this.audio.pause();
       }
       else {
         this.alertComponent.type = 'warning';
@@ -203,13 +217,19 @@ export class AutomaticBuildFormsComponent implements OnInit {
   clear() {
     if (this.form.hasCancel && this.form.cancel) {
       if (this.form.hasCancelConfirmation) {
-        this.form.cancelConfirmation().then(res => {
+        this.form.cancelConfirmation().then(() => {
           this.initializeFormGroup();
           this.form.cancel(this.formGroup);
+          if (this.audio) {
+            this.audio.pause();
+          }
         }
         )
       } else {
         this.form.cancel(this.formGroup, this.form);
+        if (this.audio) {
+          this.audio.pause();
+        }
         // this.initializeFormGroup();
       }
     } else {
@@ -217,62 +237,133 @@ export class AutomaticBuildFormsComponent implements OnInit {
     }
   }
 
-  clearSignature(sP:SignaturePad){
-      sP.clear();
+  clearSignature(sP: SignaturePadComponent) {
+    sP.clear();
   }
 
-  fileChangeEvent(fileInput: any, propertyName: string) {
-    this.imageError = null;
+  fileChangeEvent(fileInput: any, propertyName: string, isAudio: boolean = false) {
+    this.imageError = '';
+    this.currentProperty = propertyName;
     if (fileInput.target.files && fileInput.target.files[0]) {
       // Size Filter Bytes
-      const max_size = 20971520;
-      const allowed_types = ['image/jpg', 'image/jpeg', 'image/png'];
-      const max_height = 15200;
-      const max_width = 25600;
+      const max_size = 104857600;
+      let allowed_types = ['image/jpg', 'image/jpeg', 'image/png'];
+      let allowedTypes = "JPG | PNG | JPEG";
+
+      if (isAudio) {
+        allowed_types = ['audio/mpeg', 'audio/mp4']
+        allowedTypes = "MP3 | MP4";
+      }
+
 
       if (fileInput.target.files[0].size > max_size) {
         this.imageError =
-          'Maximum size allowed is ' + max_size / 1000 + 'Mb';
+          'Maximum size allowed is ' + (max_size / 1024)/1024 + 'Mb';
 
         return false;
       }
 
       if (!allowed_types.includes(fileInput.target.files[0].type)) {
-        this.imageError = 'Only Images are allowed ( JPG | PNG )';
+        this.imageError = `Only Images are allowed ( ${allowedTypes} )`;
         return false;
       }
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        const image = new Image();
-        image.src = e.target.result;
-        image.onload = rs => {
-          const img_height = rs.currentTarget['height'];
-          const img_width = rs.currentTarget['width'];
-
-          console.log(img_height, img_width);
-
-
-          if (img_height > max_height && img_width > max_width) {
-            this.imageError =
-              'Maximum dimentions allowed ' +
-              max_height +
-              '*' +
-              max_width +
-              'px';
-            return false;
-          } else {
-            const imgBase64Path = e.target.result;
-            this.cardImageBase64 = imgBase64Path;
-            this.files[propertyName] = imgBase64Path;
-            // this.formGroup.controls[propertyName].setValue(this.cardImageBase64);
-            this.isImageSaved = true;
-            // this.previewImagePath = imgBase64Path;
-          }
-        };
+        this.fileReader = e;
+        if (isAudio) {
+          this.InitAudioPlayer(fileInput.target.files[0]);
+        }
+        else {
+          const image = new Image();
+          image.src = e.target.result;
+          image.onload = (rs: any) => this.ImageOnload(rs);
+        }
       };
 
       reader.readAsDataURL(fileInput.target.files[0]);
+      return false;
     }
+    return false;
+  }
+
+  dataURLtoFile(dataurl:any, filename:any) {
+
+    var arr = dataurl.split(','),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    return new File([u8arr], filename, {type:mime});
+}
+
+  InitAudioPlayer(base64: any) {
+    if(base64)
+      this.audio = new Audio(URL.createObjectURL(base64));
+    //this.audio.src = e.target.result;
+    this.audio.ontimeupdate = (ev: Event) => {
+      this.audioProgress = ((this.audio.currentTime / this.audio.duration) * 100).toFixed(1);
+    }
+
+    this.currentTime = (Number(`${this.audio.currentTime / 60}`)).toFixed(2)
+    this.audio.onloadedmetadata = (rs: any) => this.AudioOnload(rs);
+  }
+
+  ImageOnload(rs: any) {
+    const max_height = 15200;
+    const max_width = 25600;
+
+    const img_height: any = rs.currentTarget['height'];
+    const img_width: any = rs.currentTarget['width'];
+
+    console.log(img_height, img_width);
+
+
+    if (img_height > max_height && img_width > max_width) {
+      this.imageError =
+        'Maximum dimentions allowed ' +
+        max_height +
+        '*' +
+        max_width +
+        'px';
+      return false;
+    } else {
+      const imgBase64Path = this.fileReader.target.result;
+      this.cardImageBase64 = imgBase64Path;
+      this.files[this.currentProperty] = imgBase64Path;
+      // this.formGroup.controls[propertyName].setValue(this.cardImageBase64);
+      this.isImageSaved = true;
+      // this.previewImagePath = imgBase64Path;
+    }
+    return false;
+  };
+
+  AudioOnload(rs: any) {
+    const imgBase64Path = this.fileReader.target.result;
+    console.log(rs.currentTarget);
+    const blob = base64StringToBlob(imgBase64Path, 'audio/mpeg');
+    this.cardImageBase64 = imgBase64Path;
+    this.files[this.currentProperty] = imgBase64Path;
+    // this.formGroup.controls[propertyName].setValue(this.cardImageBase64);
+    this.isImageSaved = true;
+    return true;
+  };
+
+  playPause() {
+    if (this.audio.paused) {
+      this.audio.play();
+    }
+    else {
+      this.audio.pause();
+    }
+  }
+
+  getDuration() {
+    return (parseFloat(`${this.audio.duration / 60}`)).toFixed(2)
   }
 
   drawComplete() {
@@ -280,8 +371,26 @@ export class AutomaticBuildFormsComponent implements OnInit {
   }
 
   removeImage() {
-    this.cardImageBase64 = null;
+    this.cardImageBase64 = '';
     this.isImageSaved = false;
   }
 
+}
+
+interface MarkerProperties {
+  position: {
+    lat: number;
+    lng: number;
+  }
+};
+
+function base64StringToBlob(b64Data: any, contentType: any): Blob {
+  const byteCharacters = btoa(b64Data);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: contentType });
+  return blob;
 }

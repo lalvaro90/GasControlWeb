@@ -5,12 +5,17 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material-module';
 import { NgxPrintModule } from 'ngx-print';
 import { BuildListsComponent } from './build-lists/build-lists.component';
-import { TextMaskModule } from 'angular2-text-mask';
+import { IConfig, NgxMaskDirective, provideEnvironmentNgxMask } from 'ngx-mask';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { SignaturePadModule } from 'angular2-signaturepad';
+import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
 import { ReportBuilderComponent } from './report-builder/report-builder.component';
 
 
+const maskConfigFunction: () => Partial<IConfig> = () => {
+  return {
+    validation: false,
+  };
+};
 
 @NgModule({
   declarations: [
@@ -24,9 +29,12 @@ import { ReportBuilderComponent } from './report-builder/report-builder.componen
     MaterialModule,
     CommonModule,
     NgxPrintModule,
-    TextMaskModule,
+    NgxMaskDirective,
     GoogleMapsModule,
-    SignaturePadModule,
+    AngularSignaturePadModule,
+  ],
+  providers:[
+    provideEnvironmentNgxMask(maskConfigFunction)
   ],
   exports:[
     AutomaticBuildFormsComponent,

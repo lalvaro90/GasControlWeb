@@ -52,7 +52,6 @@ export class AddImageComponent implements OnInit {
   }
 
   async loadItemInformation() {
-    debugger;
     await this.service.getById(Number(this.itemId)).toPromise().then(res => {
       this.item = res;      
       this.initilizeInformation();

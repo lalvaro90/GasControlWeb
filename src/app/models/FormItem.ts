@@ -5,6 +5,7 @@ import { ValidatorFn } from '@angular/forms';
 
 export class FormBuilder{
   formName:string;
+  subTitle:string;
   hasSubmit:boolean;
   hasCancel:boolean;
   hasPrint: boolean;
@@ -54,7 +55,9 @@ export class FormItem {
 }
 
 
-export enum InputType{
+
+
+export enum InputType {
   button = 'button',
   checkbox = 'checkbox',
   color = 'color',
@@ -84,4 +87,5 @@ export enum InputType{
   location = 'location',
   list = 'list',
   signature = 'signature',
+  audio = "audio"
 }

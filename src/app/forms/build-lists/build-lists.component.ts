@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ListModel, ListItemActionsModel } from '../List-Item-Model';
+import { ListModel, ListItemActionsModel, ListItemModel } from '../List-Item-Model';
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,12 +10,11 @@ import { Router } from '@angular/router';
 export class BuildListsComponent implements OnInit {
 
   @Input()
-  listBuilder: ListModel;
+  listBuilder:ListModel = new ListModel;
   displayedColumns: Array<string>;
-  actionsColName: string = 'Acciones';
-  loading: boolean;
-  original: Array<any>;
-  searchText: string = 'Buscar';
+  actionsColName:string = 'Acciones';
+  loading:boolean = false;
+  original:Array<any> = [];
 
   length = 0;
   pageSize = 100;
@@ -26,68 +25,42 @@ export class BuildListsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.listBuilder.listItems.forEach(it => {
+    this.listBuilder.listItems.forEach((it:ListItemModel) => {
       this.displayedColumns.push(it.PropertyName);
     });
-    if (this.listBuilder.hasActions) {
+    if(this.listBuilder.hasActions){
       this.displayedColumns.push(this.actionsColName);
     }
     this.original = this.listBuilder.list;
   }
 
-  listAction(action: ListItemActionsModel, item: any, reload: Function) {
-
-    if (action.URL) {
-      if (action.URL.indexOf(':') > -1) {
-        let url = action.URL;
-        action.params.forEach(it => {
-          url = url.replace(`:${it}`, item[it]);
-        });
-        this.router.navigate([url]);
-      } else {
-        var params = { queryParams: {} };
-        if (action.params.length > 0) {
-          action.params.forEach(it => {
+  listAction(action:ListItemActionsModel, item:any, reload:any){
+    if(action.URL){
+      var params:any =  {queryParams:{}};
+      if(action.params.length > 0){
+        action.params.forEach((it:any) => {
+          if(it.indexOf('.')>0){
+            let values = (<string>it).split('.');
+            params['queryParams'][values[0]] = values[1];
+          }else{
             params['queryParams'][it] = item[it];
-          });
-          this.router.navigate([action.URL], params);
-        }
-        else {
-          this.router.navigate([action.URL]);
-        }
-      }
-
-    } else if (action.callback) {
-      action.callback(item, action.service, reload);
-    }
-
-  }
-
-  search($event) {
-    var value = $event.target.value;
-    var out = new Array<any>();
-    if (value) {
-      this.displayedColumns.forEach(y => {
-        this.original.forEach(x => {
-          if(x[y]?.indexOf(value)>-1){
-            if(out.indexOf(x) < 0){
-              out.push(x);
-            }
           }
-        })
-      });      
-      this.listBuilder.list = out;
-      console.log('output',this.listBuilder.list);
+        });
+        this.router.navigate([action.URL], params);
+      }
+      else{
+        this.router.navigate([action.URL]);
+      }
+    }else if(action.callback){
+        action.callback(item,action.service, reload);
     }
-    else{
-      this.listBuilder.list = this.original;
-    }
+
   }
 
-  page($event) {
+  page($event: any){
     this.loading = true;
 
-    this.listBuilder.list = this.original.slice(($event.pageIndex) * $event.pageSize, ($event.pageIndex + 1) * $event.pageSize)
+    this.listBuilder.list = this.original.slice(($event.pageIndex)*$event.pageSize,($event.pageIndex+1)*$event.pageSize)
 
     this.loading = false;
   }

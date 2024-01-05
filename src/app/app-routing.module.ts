@@ -25,9 +25,9 @@ const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/login' },
   {path:'login', component: LoginComponent},
   {path:'images/:service/:property/:id', component: AddImageComponent},
-  {path: 'config', loadChildren: './app-configuration/app-configuration.module#AppConfigurationModule'},
-  {path: 'control', loadChildren: './control/control.module#ControlModule'},  
-  {path: 'reports', loadChildren: './reports/reports.module#ReportsModule'}
+  {path: 'config', loadChildren: () => import('./app-configuration/app-configuration.module').then(m => m.AppConfigurationModule)},
+  {path: 'control', loadChildren: () => import('./control/control.module').then(m => m.ControlModule)},  
+  {path: 'reports', loadChildren: () => import('./reports/reports.module').then(m=> m.ReportsModule)}
 ];
 
 @NgModule({
